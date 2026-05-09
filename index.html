@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Local Spam Emails — Block Spam at the Source</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Freemius SDK -->
+  <script type="text/javascript" src="https://checkout.freemius.com/js/v1/"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f9fc;
+      --surface: #ffffff;
+      --surface2: #f1f3f8;
+      --border: #e2e5ee;
+      --border2: #c8cdd9;
+      --text: #0d1117;
+      --muted: #5a6277;
+      --accent: #2563eb;
+      --accent-light: #eff4ff;
+      --accent-mid: #dbeafe;
+      --accent-dark: #1d4ed8;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red-light: #fef2f2;
+      --red: #dc2626;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo .icon-wrap {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-logo svg { color: #fff; }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 400;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .btn-nav {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 7px 18px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: background .2s;
+    }
+    .btn-nav:hover { background: var(--accent-dark) !important; }
+
+    /* HERO */
+    .hero {
+      padding: 80px 2rem 72px;
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-mid);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 54px);
+      font-weight: 600;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      font-weight: 300;
+      line-height: 1.65;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 13px 28px;
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      padding: 13px 28px;
+      border-radius: var(--radius);
+      font-weight: 400;
+      font-size: 15px;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      transition: border-color .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat strong { display: block; font-size: 26px; font-weight: 600; color: var(--text); }
+    .hero-stat span { font-size: 13px; color: var(--muted); }
+
+    section { padding: 72px 2rem; }
+    .section-inner { max-width: 1080px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 600;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+
+    .step-num {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-mid);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .step-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .step-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      background: var(--accent-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .feature-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .compare-section { background: var(--surface); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    .compare-table th {
+      background: var(--surface2);
+      padding: 14px 20px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-table th:first-child { width: 42%; }
+
+    .compare-table td {
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: var(--bg); }
+
+    .check { color: var(--green); font-size: 18px; font-weight: 600; }
+    .cross { color: var(--red); font-size: 18px; }
+
+    .highlight-col {
+      background: var(--accent-light);
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .pricing-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      max-width: 1080px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .plan-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      position: relative;
+      transition: transform 0.1s ease;
+    }
+
+    .pricing-card.featured {
+      border: 2px solid var(--accent);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .pricing-card h3 { font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
+
+    .price {
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .price sup { font-size: 18px; vertical-align: top; margin-top: 6px; font-weight: 400; }
+    .price-period { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+    .pricing-features { list-style: none; margin-bottom: 28px; }
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      padding: 5px 0;
+    }
+
+    .pricing-features li .tick {
+      color: var(--green);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .btn-purchase {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background .2s, transform .1s;
+      text-align: center;
+    }
+    .btn-purchase.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-purchase.primary:hover { background: var(--accent-dark); }
+    .btn-purchase.primary:active { transform: scale(0.98); }
+    .btn-purchase.outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-purchase.outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .faq-list { max-width: 680px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      cursor: pointer;
+    }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    .faq-q {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+    .faq-q span {
+      font-size: 20px;
+      font-weight: 400;
+      transition: transform 0.2s ease;
+      color: var(--accent);
+    }
+    .faq-q span.open { transform: rotate(45deg); }
+    .faq-a {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, margin-top 0.2s ease;
+      margin-top: 0;
+    }
+    .faq-a.show {
+      max-height: 180px;
+      margin-top: 12px;
+    }
+
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.5);
+      padding: 40px 2rem;
+      text-align: center;
+      font-size: 14px;
+    }
+    footer strong { color: #fff; }
+
+    .demo-block {
+      background: #0d1117;
+      border-radius: var(--radius-lg);
+      border: 1px solid #2a2e3a;
+      padding: 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    .demo-block .line { display: flex; gap: 12px; }
+    .demo-block .label { color: #6b7280; flex-shrink: 0; }
+    .demo-block .blocked { color: #ef4444; }
+    .demo-block .allowed { color: #22c55e; }
+    .demo-block .info { color: #60a5fa; }
+    .demo-block .dim { color: #4b5563; }
+
+    .section-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .section-split { grid-template-columns: 1fr; }
+      .hero { padding: 48px 1.25rem 48px; }
+      .hero-stats { gap: 24px; }
+      nav { padding: 0 1.25rem; }
+      section { padding: 52px 1.25rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="icon-wrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    Local Spam Emails
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><button class="btn-nav" id="nav-buy">Buy Now</button></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    WordPress Plugin — No Server Required
+  </div>
+  <h1>Stop spam emails <span>before they spread</span></h1>
+  <p class="hero-sub">Local Spam Emails blocks disposable, fake, and blacklisted email addresses directly on your WordPress site — no API calls, no subscriptions, no data leaving your server.</p>
+  <div class="hero-cta">
+    <button class="btn-primary" id="hero-buy">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Try Free for 14 Days
+    </button>
+    <a href="#how" class="btn-ghost">See how it works</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>100%</strong><span>Local processing</span></div>
+    <div class="hero-stat"><strong>0ms</strong><span>External API latency</span></div>
+    <div class="hero-stat"><strong>500K+</strong><span>Spam domains blocked</span></div>
+    <div class="hero-stat"><strong>GDPR</strong><span>No data sent away</span></div>
+  </div>
+</div>
+
+<section id="how" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">How it works</div>
+    <h2>Simple, local, effective</h2>
+    <p class="section-desc">Four steps from install to zero spam — all on your server, no third-party API needed.</p>
+    <div class="steps">
+      <div class="step-card"><div class="step-num">1</div><h3>Install & activate</h3><p>Upload the plugin to your WordPress site and activate it. No configuration wizard, no account signup.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Bundled blocklist loads</h3><p>Over 500,000 disposable and spam email domains are included locally. Blocklist updates ship with plugin updates.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Forms are protected</h3><p>Every email field across registration, comments, WooCommerce, and contact forms is validated instantly.</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Spam is blocked silently</h3><p>Blocked emails get a friendly error. Real users pass through without any friction or delay.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner">
+    <div class="section-split">
+      <div>
+        <div class="section-label">Live example</div>
+        <h2>Instant local lookup</h2>
+        <p class="section-desc" style="margin-bottom: 24px;">Every check runs on your server in microseconds. No HTTP requests, no rate limits, no external dependency.</p>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px;"><span style="color: var(--green); font-size: 18px;">✓</span> Works offline — blocklist is bundled with the plugin</li>
+          <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px;"><span style="color: var(--green); font-size: 18px;">✓</span> Custom domain blacklist &amp; whitelist support</li>
+          <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px;"><span style="color: var(--green); font-size: 18px;">✓</span> Detailed logs in the WordPress admin panel</li>
+        </ul>
+      </div>
+      <div class="demo-block">
+        <div class="line"><span class="label">›</span><span class="info">checking: user@gmail.com</span></div>
+        <div class="line"><span class="label"> </span><span class="allowed">✓ allowed — real domain</span></div>
+        <div class="dim">──────────────────────</div>
+        <div class="line"><span class="label">›</span><span class="info">checking: user@mailnull.com</span></div>
+        <div class="line"><span class="label"> </span><span class="blocked">✗ blocked — disposable domain</span></div>
+        <div class="dim">──────────────────────</div>
+        <div class="line"><span class="label">›</span><span class="info">checking: boss@guerrillamail.com</span></div>
+        <div class="line"><span class="label"> </span><span class="blocked">✗ blocked — known spam provider</span></div>
+        <div class="dim">──────────────────────</div>
+        <div class="line"><span class="label">›</span><span class="info">lookup time: 0.3ms — no API calls</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <h2>Everything you need to stay spam-free</h2>
+    <p class="section-desc">Built specifically for WordPress with privacy and performance as first-class concerns.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h3>500K+ spam domains bundled</h3><p>A massive, curated blocklist of disposable email providers ships inside the plugin.</p></div></div>
+      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><h3>Works with all major plugins</h3><p>Integrates with WooCommerce, WPForms, CF7, Gravity Forms, and native registration.</p></div></div>
+      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><h3>Custom rules engine</h3><p>Add your own blocked or allowed domains from the dashboard.</p></div></div>
+      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 

@@ -122,7 +122,7 @@
       title:    '3 Site License',
       subtitle: 'Perfect for individual developers & small projects',
       currency: '$',
-      amount:   '49',
+      amount:   '99',
       period:   '/ year',
       url:      'https://checkout.freemius.com/plugin/32247/plan/52908/licenses/3/',
       features: [
@@ -144,7 +144,7 @@
       title:    '50 Site License',
       subtitle: 'Built for agencies managing multiple client sites',
       currency: '$',
-      amount:   '99',
+      amount:   '249',
       period:   '/ year',
       url:      'https://checkout.freemius.com/plugin/32247/plan/52909/licenses/50/',
       features: [
@@ -167,7 +167,7 @@
       title:    'Unlimited Lifetime License',
       subtitle: 'Unlimited sites, one payment — forever',
       currency: '$',
-      amount:   '249',
+      amount:   '499',
       period:   'one-time',
       url:      'https://checkout.freemius.com/plugin/32247/plan/52910/licenses/unlimited/',
       features: [

@@ -1,774 +1,626 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Local Spam Emails — Block Spam at the Source</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <!-- Freemius SDK -->
-  <script type="text/javascript" src="https://checkout.freemius.com/js/v1/"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #f8f9fc;
-      --surface: #ffffff;
-      --surface2: #f1f3f8;
-      --border: #e2e5ee;
-      --border2: #c8cdd9;
-      --text: #0d1117;
-      --muted: #5a6277;
-      --accent: #2563eb;
-      --accent-light: #eff4ff;
-      --accent-mid: #dbeafe;
-      --accent-dark: #1d4ed8;
-      --green: #16a34a;
-      --green-light: #f0fdf4;
-      --red-light: #fef2f2;
-      --red: #dc2626;
-      --radius: 10px;
-      --radius-lg: 16px;
-    }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 16px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* NAV */
-    nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 60px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .nav-logo .icon-wrap {
-      width: 32px;
-      height: 32px;
-      background: var(--accent);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .nav-logo svg { color: #fff; }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 14px;
-      color: var(--muted);
-      text-decoration: none;
-      font-weight: 400;
-      transition: color .2s;
-    }
-    .nav-links a:hover { color: var(--text); }
-
-    .btn-nav {
-      background: var(--accent);
-      color: #fff !important;
-      padding: 7px 18px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      transition: background .2s;
-    }
-    .btn-nav:hover { background: var(--accent-dark) !important; }
-
-    /* HERO */
-    .hero {
-      padding: 80px 2rem 72px;
-      text-align: center;
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--accent-light);
-      border: 1px solid var(--accent-mid);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 500;
-      padding: 5px 14px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-size: clamp(34px, 5vw, 54px);
-      font-weight: 600;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-      color: var(--text);
-      margin-bottom: 20px;
-    }
-
-    h1 span { color: var(--accent); }
-
-    .hero-sub {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 560px;
-      margin: 0 auto 36px;
-      font-weight: 300;
-      line-height: 1.65;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 48px;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      padding: 13px 28px;
-      border-radius: var(--radius);
-      font-weight: 500;
-      font-size: 15px;
-      border: none;
-      cursor: pointer;
-      transition: background .2s, transform .1s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-primary:hover { background: var(--accent-dark); }
-    .btn-primary:active { transform: scale(0.98); }
-
-    .btn-ghost {
-      background: var(--surface);
-      color: var(--text);
-      padding: 13px 28px;
-      border-radius: var(--radius);
-      font-weight: 400;
-      font-size: 15px;
-      border: 1px solid var(--border2);
-      cursor: pointer;
-      transition: border-color .2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .hero-stat { text-align: center; }
-    .hero-stat strong { display: block; font-size: 26px; font-weight: 600; color: var(--text); }
-    .hero-stat span { font-size: 13px; color: var(--muted); }
-
-    section { padding: 72px 2rem; }
-    .section-inner { max-width: 1080px; margin: 0 auto; }
-    .section-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-    h2 {
-      font-size: clamp(26px, 3.5vw, 38px);
-      font-weight: 600;
-      letter-spacing: -1px;
-      line-height: 1.15;
-      margin-bottom: 14px;
-    }
-    .section-desc {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 520px;
-      margin-bottom: 48px;
-      font-weight: 300;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-    }
-
-    .step-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 28px 24px;
-    }
-
-    .step-num {
-      width: 36px;
-      height: 36px;
-      background: var(--accent-light);
-      border: 1px solid var(--accent-mid);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-
-    .step-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-    .step-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 28px 24px;
-      display: flex;
-      gap: 18px;
-      align-items: flex-start;
-    }
-
-    .feature-icon {
-      width: 42px;
-      height: 42px;
-      flex-shrink: 0;
-      background: var(--accent-light);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--accent);
-    }
-
-    .feature-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-    .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-    .compare-section { background: var(--surface); }
-
-    .compare-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      font-size: 14px;
-    }
-
-    .compare-table th {
-      background: var(--surface2);
-      padding: 14px 20px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 13px;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .compare-table th:first-child { width: 42%; }
-
-    .compare-table td {
-      padding: 13px 20px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
-    .compare-table tr:last-child td { border-bottom: none; }
-    .compare-table tr:hover td { background: var(--bg); }
-
-    .check { color: var(--green); font-size: 18px; font-weight: 600; }
-    .cross { color: var(--red); font-size: 18px; }
-
-    .highlight-col {
-      background: var(--accent-light);
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .pricing-grid-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      max-width: 1080px;
-      margin: 0 auto;
-      text-align: left;
-    }
-
-    .plan-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    .pricing-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 32px 28px;
-      position: relative;
-      transition: transform 0.1s ease;
-    }
-
-    .pricing-card.featured {
-      border: 2px solid var(--accent);
-    }
-
-    .pricing-badge {
-      position: absolute;
-      top: -13px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      padding: 4px 14px;
-      border-radius: 100px;
-      white-space: nowrap;
-    }
-
-    .pricing-card h3 { font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
-
-    .price {
-      font-size: 40px;
-      font-weight: 600;
-      letter-spacing: -1.5px;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .price sup { font-size: 18px; vertical-align: top; margin-top: 6px; font-weight: 400; }
-    .price-period { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
-
-    .pricing-features { list-style: none; margin-bottom: 28px; }
-    .pricing-features li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--muted);
-      padding: 5px 0;
-    }
-
-    .pricing-features li .tick {
-      color: var(--green);
-      font-size: 16px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .btn-purchase {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border-radius: var(--radius);
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      transition: background .2s, transform .1s;
-      text-align: center;
-    }
-    .btn-purchase.primary {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-purchase.primary:hover { background: var(--accent-dark); }
-    .btn-purchase.primary:active { transform: scale(0.98); }
-    .btn-purchase.outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border2);
-    }
-    .btn-purchase.outline:hover { border-color: var(--accent); color: var(--accent); }
-
-    .faq-list { max-width: 680px; margin: 0 auto; }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-      cursor: pointer;
-    }
-    .faq-item:first-child { border-top: 1px solid var(--border); }
-    .faq-q {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      user-select: none;
-    }
-    .faq-q span {
-      font-size: 20px;
-      font-weight: 400;
-      transition: transform 0.2s ease;
-      color: var(--accent);
-    }
-    .faq-q span.open { transform: rotate(45deg); }
-    .faq-a {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, margin-top 0.2s ease;
-      margin-top: 0;
-    }
-    .faq-a.show {
-      max-height: 180px;
-      margin-top: 12px;
-    }
-
-    footer {
-      background: var(--text);
-      color: rgba(255,255,255,0.5);
-      padding: 40px 2rem;
-      text-align: center;
-      font-size: 14px;
-    }
-    footer strong { color: #fff; }
-
-    .demo-block {
-      background: #0d1117;
-      border-radius: var(--radius-lg);
-      border: 1px solid #2a2e3a;
-      padding: 24px;
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      line-height: 1.8;
-      max-width: 560px;
-    }
-
-    .demo-block .line { display: flex; gap: 12px; }
-    .demo-block .label { color: #6b7280; flex-shrink: 0; }
-    .demo-block .blocked { color: #ef4444; }
-    .demo-block .allowed { color: #22c55e; }
-    .demo-block .info { color: #60a5fa; }
-    .demo-block .dim { color: #4b5563; }
-
-    .section-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-
-    @media (max-width: 700px) {
-      .section-split { grid-template-columns: 1fr; }
-      .hero { padding: 48px 1.25rem 48px; }
-      .hero-stats { gap: 24px; }
-      nav { padding: 0 1.25rem; }
-      section { padding: 52px 1.25rem; }
-      .nav-links { display: none; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Spam Shield — Intelligent Email Protection for WordPress</title>
+<meta name="description" content="Stop spam at the source. Email Spam Shield detects fake, disposable, and bot-submitted emails across every major WordPress form plugin — with zero cloud dependency.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<nav>
-  <a href="#" class="nav-logo">
-    <div class="icon-wrap">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      </svg>
-    </div>
-    Local Spam Emails
-  </a>
-  <ul class="nav-links">
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#faq">FAQ</a></li>
-    <li><button class="btn-nav" id="nav-buy">Buy Now</button></li>
-  </ul>
-</nav>
-
-<div class="hero">
-  <div class="hero-badge">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="20 6 9 17 4 12"/>
-    </svg>
-    WordPress Plugin — No Server Required
-  </div>
-  <h1>Stop spam emails <span>before they spread</span></h1>
-  <p class="hero-sub">Local Spam Emails blocks disposable, fake, and blacklisted email addresses directly on your WordPress site — no API calls, no subscriptions, no data leaving your server.</p>
-  <div class="hero-cta">
-    <button class="btn-primary" id="hero-buy">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Try Free for 14 Days
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="nav__inner container">
+    <a href="#" class="nav__logo">
+      <img src="assets/icon-128.svg" width="30" height="30" alt="Email Spam Shield icon">
+      <span>Email Spam Shield</span>
+    </a>
+    <nav class="nav__links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#layers">Engine</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <a href="#pricing" class="btn btn--sm btn--primary">Get License</a>
+    <button class="nav__toggle" id="navToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
     </button>
-    <a href="#how" class="btn-ghost">See how it works</a>
   </div>
-  <div class="hero-stats">
-    <div class="hero-stat"><strong>100%</strong><span>Local processing</span></div>
-    <div class="hero-stat"><strong>0ms</strong><span>External API latency</span></div>
-    <div class="hero-stat"><strong>500K+</strong><span>Spam domains blocked</span></div>
-    <div class="hero-stat"><strong>GDPR</strong><span>No data sent away</span></div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__bg">
+    <div class="hero__orb hero__orb--1"></div>
+    <div class="hero__orb hero__orb--2"></div>
+    <div class="hero__grid"></div>
+  </div>
+  <div class="container hero__inner">
+
+    <!-- Left: text content -->
+    <div class="hero__text">
+      <div class="hero__badge">
+        <span class="badge badge--glow">✦ Zero cloud dependency</span>
+      </div>
+      <h1 class="hero__title">
+        Stop spam emails<br>
+        <span class="gradient-text">before they hit your database</span>
+      </h1>
+      <p class="hero__sub">
+        A fully self-contained WordPress plugin that detects fake, disposable, and bot-submitted emails
+        across every major form plugin — no APIs, no subscriptions, no data leaving your server.
+      </p>
+      <div class="hero__actions">
+        <a href="#pricing" class="btn btn--primary btn--lg">
+          Get a License
+        </a>
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <span class="hero__stat-num">6</span>
+          <span class="hero__stat-label">Detection layers</span>
+        </div>
+        <div class="hero__stat-div"></div>
+        <div class="hero__stat">
+          <span class="hero__stat-num">7</span>
+          <span class="hero__stat-label">Form plugins covered</span>
+        </div>
+        <div class="hero__stat-div"></div>
+        <div class="hero__stat">
+          <span class="hero__stat-num">0</span>
+          <span class="hero__stat-label">Cloud calls made</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: animated demo card -->
+    <div class="hero__demo">
+      <div class="demo-card">
+        <div class="demo-card__bar">
+          <span class="demo-dot demo-dot--red"></span>
+          <span class="demo-dot demo-dot--amber"></span>
+          <span class="demo-dot demo-dot--green"></span>
+          <span class="demo-card__url">yoursite.com/register</span>
+        </div>
+        <div class="demo-card__body">
+          <div class="demo-field">
+            <label>Name</label>
+            <div class="demo-input demo-input--filled">John Smith</div>
+          </div>
+          <div class="demo-field">
+            <label>Email</label>
+            <div class="demo-input demo-input--checking" id="demoEmail">
+              <span class="demo-typing" id="demoTyping"></span>
+              <span class="demo-cursor" id="demoCursor">|</span>
+            </div>
+            <div class="demo-verdict" id="demoVerdict"></div>
+          </div>
+          <div class="demo-btn-row">
+            <div class="demo-submit">Create Account</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF STRIP -->
+<div class="strip">
+  <div class="container strip__inner">
+    <span class="strip__label">Works with</span>
+    <div class="strip__logos">
+      <div class="strip__logo">Gravity Forms</div>
+      <div class="strip__logo">WooCommerce</div>
+      <div class="strip__logo">Contact Form 7</div>
+      <div class="strip__logo">WPForms</div>
+      <div class="strip__logo">Ninja Forms</div>
+      <div class="strip__logo">Fluent Forms</div>
+      <div class="strip__logo">WordPress Core</div>
+    </div>
   </div>
 </div>
 
-<section id="how" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">How it works</div>
-    <h2>Simple, local, effective</h2>
-    <p class="section-desc">Four steps from install to zero spam — all on your server, no third-party API needed.</p>
-    <div class="steps">
-      <div class="step-card"><div class="step-num">1</div><h3>Install & activate</h3><p>Upload the plugin to your WordPress site and activate it. No configuration wizard, no account signup.</p></div>
-      <div class="step-card"><div class="step-num">2</div><h3>Bundled blocklist loads</h3><p>Over 500,000 disposable and spam email domains are included locally. Blocklist updates ship with plugin updates.</p></div>
-      <div class="step-card"><div class="step-num">3</div><h3>Forms are protected</h3><p>Every email field across registration, comments, WooCommerce, and contact forms is validated instantly.</p></div>
-      <div class="step-card"><div class="step-num">4</div><h3>Spam is blocked silently</h3><p>Blocked emails get a friendly error. Real users pass through without any friction or delay.</p></div>
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">What you get</div>
+      <h2>Everything you need to stop email spam — nothing you don't</h2>
+      <p>Built entirely inside the plugin. No external API keys, no monthly fees, no privacy concerns.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card feature-card--wide">
+        <div class="feature-card__icon icon--purple">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>6-layer detection engine</h3>
+        <p>Every email passes through syntax analysis, disposable domain checking, live MX record validation, real SMTP handshake verification, behavioral analysis, and reputation memory — all on your server.</p>
+        <div class="layer-pills">
+          <span class="pill pill--1">Syntax</span>
+          <span class="pill pill--2">Disposable</span>
+          <span class="pill pill--3">MX Record</span>
+          <span class="pill pill--4">SMTP</span>
+          <span class="pill pill--5">Behavior</span>
+          <span class="pill pill--6">Reputation</span>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--green">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <h3>Real-time validation</h3>
+        <p>Checks email addresses as users type, before the form is ever submitted. Shows instant feedback with a status indicator — no page reload.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3>Zero external calls</h3>
+        <p>All intelligence lives inside the plugin. DNS/MX lookups use your server's PHP functions. No data ever reaches a third-party API.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--amber">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3>Hard-block rules</h3>
+        <p>Certain signals bypass scoring entirely: honeypot filled, domain has no mail server, mailbox rejected. Instant block, no calculation needed.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--teal">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3>Full submission logs</h3>
+        <p>Every check is logged with score, reasons, layer breakdown, IP, and source form. Filter, search, and export to CSV with one click.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--pink">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Reputation memory</h3>
+        <p>The engine remembers. Emails and IPs that were flagged before are automatically scored higher on subsequent attempts.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--coral">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3>Honeypot &amp; timing</h3>
+        <p>Invisible honeypot fields and sub-second timing detection catch bots that fill forms faster than any human ever could.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon icon--purple">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <h3>Auto-updating domain list</h3>
+        <p>The disposable domain blocklist updates automatically via WP-Cron from a curated GitHub source — always current without manual effort.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<section>
-  <div class="section-inner">
-    <div class="section-split">
-      <div>
-        <div class="section-label">Live example</div>
-        <h2>Instant local lookup</h2>
-        <p class="section-desc" style="margin-bottom: 24px;">Every check runs on your server in microseconds. No HTTP requests, no rate limits, no external dependency.</p>
-        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
-          <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px;"><span style="color: var(--green); font-size: 18px;">✓</span> Works offline — blocklist is bundled with the plugin</li>
-          <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px;"><span style="color: var(--green); font-size: 18px;">✓</span> Custom domain blacklist &amp; whitelist support</li>
-          <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px;"><span style="color: var(--green); font-size: 18px;">✓</span> Detailed logs in the WordPress admin panel</li>
+<!-- HOW IT WORKS -->
+<section class="section section--alt" id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">How it works</div>
+      <h2>From submission to verdict in milliseconds</h2>
+      <p>The engine runs every layer in sequence. A single layer reaching a hard-block threshold stops processing immediately.</p>
+    </div>
+    <div class="flow">
+      <div class="flow__step">
+        <div class="flow__num">01</div>
+        <div class="flow__content">
+          <h4>Email is submitted</h4>
+          <p>User types into any form field. The real-time validator fires after 600ms of inactivity — or server-side on form submission.</p>
+        </div>
+      </div>
+      <div class="flow__arrow">↓</div>
+      <div class="flow__step">
+        <div class="flow__num">02</div>
+        <div class="flow__content">
+          <h4>Whitelist check</h4>
+          <p>Trusted domains and previously approved emails skip all layers instantly.</p>
+        </div>
+      </div>
+      <div class="flow__arrow">↓</div>
+      <div class="flow__step">
+        <div class="flow__num">03</div>
+        <div class="flow__content">
+          <h4>6 layers run in parallel</h4>
+          <p>Each layer scores 0–100. Weighted totals are summed. Any layer hitting a hard-block threshold forces an immediate block verdict.</p>
+        </div>
+      </div>
+      <div class="flow__arrow">↓</div>
+      <div class="flow__step">
+        <div class="flow__num">04</div>
+        <div class="flow__content">
+          <h4>Verdict: Allow / Flag / Block</h4>
+          <p>Below 30 = allowed. 30–59 = flagged (suspicious). 60+ = blocked. Every result is logged with full reason breakdown.</p>
+        </div>
+      </div>
+      <div class="flow__arrow">↓</div>
+      <div class="flow__step flow__step--terminal">
+        <div class="flow__num flow__num--green">✓</div>
+        <div class="flow__content">
+          <h4>Reputation updated</h4>
+          <p>The engine records the email and IP in its local memory table. Future checks for the same address score higher automatically.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score bar visual -->
+    <div class="score-visual">
+      <div class="score-visual__title">How the score maps to a verdict</div>
+      <div class="score-bar-track">
+        <div class="score-zone score-zone--allow">
+          <span>0 – 29</span>
+          <span class="score-zone__label">Allowed</span>
+        </div>
+        <div class="score-zone score-zone--flag">
+          <span>30 – 59</span>
+          <span class="score-zone__label">Flagged</span>
+        </div>
+        <div class="score-zone score-zone--block">
+          <span>60 – 100</span>
+          <span class="score-zone__label">Blocked</span>
+        </div>
+      </div>
+      <div class="score-examples">
+        <div class="score-eg score-eg--allow">
+          <code>john@gmail.com</code>
+          <span class="tag tag--allow">Score: 4 → Allowed</span>
+        </div>
+        <div class="score-eg score-eg--flag">
+          <code>user12345@yahoo.com</code>
+          <span class="tag tag--flag">Score: 38 → Flagged</span>
+        </div>
+        <div class="score-eg score-eg--block">
+          <code>test@testing.com</code>
+          <span class="tag tag--block">Score: 100 → Blocked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYERS -->
+<section class="section" id="layers">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">Detection engine</div>
+      <h2>Six independent layers, one confident verdict</h2>
+      <p>Each layer is independently configurable. You can disable layers, adjust weights, and set hard-block thresholds from the settings page.</p>
+    </div>
+    <div class="layers-list">
+
+      <div class="layer-item">
+        <div class="layer-item__head">
+          <span class="layer-badge layer-badge--1">S</span>
+          <div>
+            <h4>Syntax &amp; Pattern Analysis</h4>
+            <span class="weight-tag">15% weight</span>
+          </div>
+        </div>
+        <p>Detects keyboard walks (<code>qwerty123</code>), gibberish local parts, all-numeric addresses, excessive repeating characters, suspicious TLDs, and known placeholder domains. Catches <code>test@testing.com</code> with an instant hard block.</p>
+      </div>
+
+      <div class="layer-item">
+        <div class="layer-item__head">
+          <span class="layer-badge layer-badge--2">D</span>
+          <div>
+            <h4>Disposable Domain Detection</h4>
+            <span class="weight-tag">25% weight</span>
+          </div>
+        </div>
+        <p>Checks the domain against a database of 500+ known throwaway providers — Mailinator, Guerrilla Mail, Temp-Mail, YOPmail, and more. The list auto-updates weekly via WP-Cron.</p>
+      </div>
+
+      <div class="layer-item">
+        <div class="layer-item__head">
+          <span class="layer-badge layer-badge--3">M</span>
+          <div>
+            <h4>MX Record Validation</h4>
+            <span class="weight-tag">20% weight</span>
+          </div>
+        </div>
+        <p>Queries DNS for the domain's mail exchange records. A domain with no MX or A record cannot receive email — ever. Score ≥ 80 triggers an immediate hard block regardless of the overall weighted total.</p>
+      </div>
+
+      <div class="layer-item">
+        <div class="layer-item__head">
+          <span class="layer-badge layer-badge--4">V</span>
+          <div>
+            <h4>SMTP Handshake Verification</h4>
+            <span class="weight-tag">25% weight</span>
+          </div>
+        </div>
+        <p>Opens a real TCP connection to the mail server (EHLO → MAIL FROM → RCPT TO) and checks whether the specific mailbox exists. No email is ever sent. Score ≥ 50 hard-blocks.</p>
+      </div>
+
+      <div class="layer-item">
+        <div class="layer-item__head">
+          <span class="layer-badge layer-badge--5">B</span>
+          <div>
+            <h4>Behavioral Analysis</h4>
+            <span class="weight-tag">10% weight</span>
+          </div>
+        </div>
+        <p>Checks honeypot field fill state, form completion time, and referrer headers. Bots that complete forms in under a second or fill hidden fields get an immediate hard block.</p>
+      </div>
+
+      <div class="layer-item">
+        <div class="layer-item__head">
+          <span class="layer-badge layer-badge--6">R</span>
+          <div>
+            <h4>Reputation Memory</h4>
+            <span class="weight-tag">5% weight</span>
+          </div>
+        </div>
+        <p>Maintains a local SQLite-style table of past flagged emails and IPs. Repeat offenders score higher on every subsequent attempt. Completely private — all data stays on your server.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="section section--alt" id="integrations">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">Integrations</div>
+      <h2>Protects every form on your site, automatically</h2>
+      <p>Just activate the plugin. Protection starts immediately on all supported forms — no shortcodes, no configuration required.</p>
+    </div>
+    <div class="integrations-grid">
+      <div class="integration-card">
+        <div class="integration-card__icon">🎯</div>
+        <div class="integration-card__name">Gravity Forms</div>
+        <div class="integration-card__desc">All email fields in every form</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">🛒</div>
+        <div class="integration-card__name">WooCommerce</div>
+        <div class="integration-card__desc">Checkout, account &amp; registration</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">📋</div>
+        <div class="integration-card__name">Contact Form 7</div>
+        <div class="integration-card__desc">All CF7 email fields</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">📝</div>
+        <div class="integration-card__name">WPForms</div>
+        <div class="integration-card__desc">Every WPForms email field</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">🥷</div>
+        <div class="integration-card__name">Ninja Forms</div>
+        <div class="integration-card__desc">All Ninja Forms submissions</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">💧</div>
+        <div class="integration-card__name">Fluent Forms</div>
+        <div class="integration-card__desc">Every Fluent Forms email field</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">👤</div>
+        <div class="integration-card__name">WP Registration</div>
+        <div class="integration-card__desc">Native WordPress user signup</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">💬</div>
+        <div class="integration-card__name">WP Comments</div>
+        <div class="integration-card__desc">Comment form email field</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SETTINGS PREVIEW -->
+<section class="section" id="settings">
+  <div class="container">
+    <div class="split">
+      <div class="split__text">
+        <div class="label">Admin dashboard</div>
+        <h2>Powerful controls, plain-English descriptions</h2>
+        <p>Every setting is explained in non-technical language. Toggle protection zones, tune detection weights, set hard-block thresholds, and view full submission logs — all from one familiar WordPress admin panel.</p>
+        <ul class="check-list">
+          <li>Tab-aware settings — saving one tab never resets another</li>
+          <li>Adjustable flag and block score thresholds</li>
+          <li>Per-layer enable / disable and weight sliders</li>
+          <li>Filterable logs with CSV export</li>
+          <li>Manual blocklist &amp; allowlist</li>
+          <li>Email alerts on block events</li>
         </ul>
       </div>
-      <div class="demo-block">
-        <div class="line"><span class="label">›</span><span class="info">checking: user@gmail.com</span></div>
-        <div class="line"><span class="label"> </span><span class="allowed">✓ allowed — real domain</span></div>
-        <div class="dim">──────────────────────</div>
-        <div class="line"><span class="label">›</span><span class="info">checking: user@mailnull.com</span></div>
-        <div class="line"><span class="label"> </span><span class="blocked">✗ blocked — disposable domain</span></div>
-        <div class="dim">──────────────────────</div>
-        <div class="line"><span class="label">›</span><span class="info">checking: boss@guerrillamail.com</span></div>
-        <div class="line"><span class="label"> </span><span class="blocked">✗ blocked — known spam provider</span></div>
-        <div class="dim">──────────────────────</div>
-        <div class="line"><span class="label">›</span><span class="info">lookup time: 0.3ms — no API calls</span></div>
+      <div class="split__visual">
+        <div class="settings-mockup">
+          <div class="settings-mockup__tabs">
+            <span class="smtab smtab--active">Protection</span>
+            <span class="smtab">Engine</span>
+            <span class="smtab">Rules</span>
+            <span class="smtab">Logs</span>
+          </div>
+          <div class="settings-mockup__body">
+            <div class="sm-row">
+              <div class="sm-zone">
+                <span class="sm-icon">🎯</span>
+                <span class="sm-name">Gravity Forms</span>
+                <div class="sm-toggle sm-toggle--on"></div>
+              </div>
+            </div>
+            <div class="sm-row">
+              <div class="sm-zone">
+                <span class="sm-icon">🛒</span>
+                <span class="sm-name">WooCommerce</span>
+                <div class="sm-toggle sm-toggle--on"></div>
+              </div>
+            </div>
+            <div class="sm-row">
+              <div class="sm-zone">
+                <span class="sm-icon">📋</span>
+                <span class="sm-name">Contact Form 7</span>
+                <div class="sm-toggle sm-toggle--on"></div>
+              </div>
+            </div>
+            <div class="sm-row">
+              <div class="sm-zone">
+                <span class="sm-icon">📝</span>
+                <span class="sm-name">WPForms</span>
+                <div class="sm-toggle sm-toggle--off"></div>
+              </div>
+            </div>
+            <div class="sm-score-row">
+              <span class="sm-label">Block threshold</span>
+              <div class="sm-slider">
+                <div class="sm-slider__fill" style="width:60%"></div>
+                <div class="sm-slider__thumb" style="left:60%"></div>
+              </div>
+              <span class="sm-val">60</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="features" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Features</div>
-    <h2>Everything you need to stay spam-free</h2>
-    <p class="section-desc">Built specifically for WordPress with privacy and performance as first-class concerns.</p>
-    <div class="features-grid">
-      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h3>500K+ spam domains bundled</h3><p>A massive, curated blocklist of disposable email providers ships inside the plugin.</p></div></div>
-      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><h3>Works with all major plugins</h3><p>Integrates with WooCommerce, WPForms, CF7, Gravity Forms, and native registration.</p></div></div>
-      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><h3>Custom rules engine</h3><p>Add your own blocked or allowed domains from the dashboard.</p></div></div>
-      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div><div><h3>Email attempt logging</h3><p>Every blocked email attempt is recorded with timestamp and IP.</p></div></div>
-      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg></div><div><h3>Automatic blocklist updates</h3><p>Spam domain database refreshed with every plugin update.</p></div></div>
-      <div class="feature-card"><div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div><h3>CSV log export</h3><p>Download blocked-email log as CSV for auditing or compliance.</p></div></div>
+<!-- PRICING -->
+<section class="section section--alt" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">Pricing</div>
+      <h2>One-time purchase, no subscription traps</h2>
+      <p>Buy a license, get lifetime updates on the Unlimited plan — or a full year of updates on site plans. 30-day money-back guarantee on every order.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-card__header">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span><span class="pricing-amount">99</span><span class="pricing-period">/ year</span>
+          </div>
+          <div class="pricing-sites">Up to <strong>3 sites</strong></div>
+        </div>
+        <ul class="pricing-features">
+          <li>3 WordPress site licenses</li>
+          <li>All 6 detection layers</li>
+          <li>Real-time AJAX validation</li>
+          <li>Honeypot &amp; timing detection</li>
+          <li>All 7 form plugin integrations</li>
+          <li>Full logs &amp; CSV export</li>
+          <li>Auto-updating domain blocklist</li>
+          <li>Hard-block rules engine</li>
+          <li>Email alerts on blocks</li>
+          <li>1 year of updates &amp; support</li>
+        </ul>
+        <button class="btn btn--outline btn--full" onclick="openModal('starter')">Buy Starter →</button>
+      </div>
+
+      <!-- Agency -->
+      <div class="pricing-card pricing-card--popular">
+        <div class="popular-badge">Most Popular</div>
+        <div class="pricing-card__header">
+          <div class="pricing-tier">Agency</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span><span class="pricing-amount">249</span><span class="pricing-period">/ year</span>
+          </div>
+          <div class="pricing-sites">Up to <strong>50 sites</strong></div>
+        </div>
+        <ul class="pricing-features">
+          <li>50 WordPress site licenses</li>
+          <li>All 6 detection layers</li>
+          <li>Real-time AJAX validation</li>
+          <li>Honeypot &amp; timing detection</li>
+          <li>All 7 form plugin integrations</li>
+          <li>Full logs &amp; CSV export</li>
+          <li>Auto-updating domain blocklist</li>
+          <li>Hard-block rules engine</li>
+          <li>Email alerts on blocks</li>
+          <li>Priority support</li>
+          <li>1 year of updates &amp; support</li>
+        </ul>
+        <button class="btn btn--primary btn--full" onclick="openModal('agency')">Buy Agency →</button>
+      </div>
+
+      <!-- Lifetime -->
+      <div class="pricing-card pricing-card--lifetime">
+        <div class="pricing-card__header">
+          <div class="pricing-tier">Lifetime</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span><span class="pricing-amount">499</span><span class="pricing-period">one-time</span>
+          </div>
+          <div class="pricing-sites"><strong>Unlimited sites</strong> — forever</div>
+        </div>
+        <ul class="pricing-features">
+          <li>Unlimited WordPress site licenses</li>
+          <li>All 6 detection layers</li>
+          <li>Real-time AJAX validation</li>
+          <li>Honeypot &amp; timing detection</li>
+          <li>All 7 form plugin integrations</li>
+          <li>Full logs &amp; CSV export</li>
+          <li>Auto-updating domain blocklist</li>
+          <li>Hard-block rules engine</li>
+          <li>Email alerts on blocks</li>
+          <li>Lifetime updates — pay once, own forever</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="btn btn--emerald btn--full" onclick="openModal('lifetime')">Buy Lifetime →</button>
+      </div>
+
+    </div>
+    <p class="pricing-note">All plans include a <strong>30-day money-back guarantee</strong>. Secure checkout powered by Freemius. Licenses are per domain — multisite networks count as one site.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L4 6V12C4 16.42 7.4 20.57 12 22C16.6 20.57 20 16.42 20 12V6L12 2Z" stroke="url(#footerGrad)" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <path d="M9 12l2 2 4-4" stroke="url(#footerGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="footerGrad" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#818CF8"/>
+            <stop offset="1" stop-color="#34D399"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span>Email Spam Shield</span>
+    </div>
+    <div class="footer__links">
+      <a href="#features">Features</a>
+      <a href="#layers">Engine</a>
+      <a href="#integrations">Integrations</a>
+      <a href="https://github.com/wparslan" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
-</section>
+</footer>
 
-<section class="compare-section">
-  <div class="section-inner">
-    <div class="section-label">Comparison</div>
-    <h2>Why local beats API-based</h2>
-    <p class="section-desc">Most spam blockers send emails to third-party servers. We don't.</p>
-    <table class="compare-table">
-      <thead><tr><th>Feature</th><th style="text-align:center;">Local Spam Emails</th><th style="text-align:center;">API-based plugins</th></tr></thead>
-      <tbody>
-        <tr><td>Works offline / no API key needed</td><td style="text-align:center;" class="highlight-col"><span class="check">✓</span></td><td style="text-align:center;"><span class="cross">✗</span></td></tr>
-        <tr><td>Zero data sent to third parties</td><td style="text-align:center;" class="highlight-col"><span class="check">✓</span></td><td style="text-align:center;"><span class="cross">✗</span></td></tr>
-        <tr><td>No monthly API fees</td><td style="text-align:center;" class="highlight-col"><span class="check">✓</span></td><td style="text-align:center;"><span class="cross">✗</span></td></tr>
-        <tr><td>Sub-millisecond lookups</td><td style="text-align:center;" class="highlight-col"><span class="check">✓</span></td><td style="text-align:center;"><span class="cross">✗</span></td></tr>
-        <tr><td>500,000+ blocked domains</td><td style="text-align:center;" class="highlight-col"><span class="check">✓</span></td><td style="text-align:center;">Varies</td></tr>
-        <tr><td>One-time purchase option</td><td style="text-align:center;" class="highlight-col"><span class="check">✓</span></td><td style="text-align:center;"><span class="cross">✗</span></td></tr>
-      </tbody>
-    </table>
+<!-- PRICING MODAL -->
+<div class="modal-overlay" id="pricingModal">
+  <div class="modal" id="modalBody" role="dialog" aria-modal="true" aria-label="Purchase license">
+    <!-- populated by main.js -->
   </div>
-</section>
+</div>
 
-<section id="pricing" style="border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-  <div class="section-inner" style="text-align: center;">
-    <div class="section-label" style="text-align: center;">Pricing</div>
-    <h2>Pick the plan that fits</h2>
-    <p class="section-desc" style="margin: 0 auto 48px;">Start with a free trial, then choose monthly, annual, or own it for life.</p>
-    <div class="pricing-grid-4">
-      <div class="pricing-card"><div class="plan-icon" style="background:#f0fdf4; color:#16a34a;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Free Trial</h3><div class="price" style="font-size:32px;">14 <span style="font-size:16px;">days</span></div><div class="price-period">No credit card</div><ul class="pricing-features"><li><span class="tick">✓</span> Full plugin access</li><li><span class="tick">✓</span> All features unlocked</li><li><span class="tick">✓</span> No commitment</li></ul><button class="btn-purchase outline buy-trigger" data-trial="true">Start Free Trial</button></div>
-      <div class="pricing-card"><div class="plan-icon" style="background:#eff4ff; color:#2563eb;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div><h3>Monthly</h3><div class="price"><sup>$</sup>19<span style="font-size:16px;">.99</span></div><div class="price-period">per month</div><ul class="pricing-features"><li><span class="tick">✓</span> 1 site</li><li><span class="tick">✓</span> Email log & export</li><li><span class="tick">✓</span> Email support</li></ul><button class="btn-purchase outline buy-trigger" data-billing="monthly" data-licenses="1">Get Monthly</button></div>
-      <div class="pricing-card featured"><div class="pricing-badge">Best Value</div><div class="plan-icon" style="background:#eff4ff; color:#2563eb;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div><h3>Annual</h3><div class="price"><sup>$</sup>79<span style="font-size:16px;">.99</span></div><div class="price-period">per year · save 67%</div><ul class="pricing-features"><li><span class="tick">✓</span> 1 site</li><li><span class="tick">✓</span> Priority support</li><li><span class="tick">✓</span> Auto-renewal</li></ul><button class="btn-purchase primary buy-trigger" data-billing="annual" data-licenses="1">Get Annual Plan</button></div>
-      <div class="pricing-card"><div class="plan-icon" style="background:#faf5ff; color:#7c3aed;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div><h3>Lifetime</h3><div class="price"><sup>$</sup>299<span style="font-size:16px;">.99</span></div><div class="price-period">one-time · unlimited sites</div><ul class="pricing-features"><li><span class="tick">✓</span> Unlimited sites</li><li><span class="tick">✓</span> Lifetime updates</li><li><span class="tick">✓</span> Priority & phone support</li></ul><button class="btn-purchase outline buy-trigger" data-billing="lifetime" data-licenses="-1">Buy Lifetime</button></div>
-    </div>
-    <p style="font-size: 13px; color: var(--muted); margin-top: 28px;">30-day money-back guarantee. Secure checkout powered by Freemius.</p>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="section-inner">
-    <div class="section-label">FAQ</div>
-    <h2>Common questions</h2>
-    <div class="faq-list">
-      <div class="faq-item"><div class="faq-q">Does it work without an internet connection? <span>+</span></div><div class="faq-a">Yes. The entire blocklist ships inside the plugin ZIP file. No network request is ever made during validation — it's a pure server-side local lookup.</div></div>
-      <div class="faq-item"><div class="faq-q">Which WordPress form plugins are supported? <span>+</span></div><div class="faq-a">Out of the box: WooCommerce, Contact Form 7, WPForms, Gravity Forms, Ninja Forms, and default WordPress registration. More integrations added in updates.</div></div>
-      <div class="faq-item"><div class="faq-q">How is the blocklist kept up to date? <span>+</span></div><div class="faq-a">Updated blocklists ship with each plugin update. Personal licenses get 1 year of updates; Lifetime includes lifetime updates.</div></div>
-      <div class="faq-item"><div class="faq-q">Can I whitelist certain domains for my clients? <span>+</span></div><div class="faq-a">Absolutely. The admin panel provides whitelist (always allow) and blacklist (always block) that overrides the bundled list.</div></div>
-      <div class="faq-item"><div class="faq-q">Is there a free trial or refund policy? <span>+</span></div><div class="faq-a">Yes — 14-day free trial with no credit card required. All paid plans include a 30-day money-back guarantee.</div></div>
-    </div>
-  </div>
-</section>
-
-<footer><p><strong>Local Spam Emails</strong> — WordPress Plugin</p><p style="margin-top: 8px;">Built with care · Secure checkout via Freemius · &copy; 2025</p></footer>
-
-<script>
-  (function() {
-    // Freemius checkout helper (robust against FS not being loaded instantly)
-    function waitForFreemius(cb, retries = 10) {
-      if (window.FS && typeof FS.Checkout === 'function') {
-        cb();
-        return;
-      }
-      if (retries <= 0) {
-        console.warn("Freemius SDK still not loaded, but will try again on click.");
-        return;
-      }
-      setTimeout(() => waitForFreemius(cb, retries - 1), 200);
-    }
-
-    function openCheckout(options = {}) {
-      waitForFreemius(() => {
-        try {
-          const handler = new FS.Checkout({
-            product_id: '28323',
-            plan_id: '46679',
-            public_key: 'pk_3216707dad9932e5935d17898d454',
-            image: 'https://your-plugin-site.com/logo-100x100.png'
-          });
-          handler.open(Object.assign({
-            name: 'Local Spam Emails',
-            licenses: 1,
-            purchaseCompleted: function(resp) { console.log('Purchase completed:', resp); },
-            success: function(resp) { console.log('Success:', resp); },
-            cancel: function() { console.log('Checkout closed'); }
-          }, options));
-        } catch (err) {
-          console.error("Checkout error:", err);
-          alert("Checkout cannot be opened at the moment. Please try again later.");
-        }
-      });
-    }
-
-    // Attach events to all buy buttons (trial, monthly, annual, lifetime, nav, hero)
-    const buyTriggers = document.querySelectorAll('.buy-trigger');
-    buyTriggers.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const isTrial = btn.getAttribute('data-trial') === 'true';
-        const billing = btn.getAttribute('data-billing');
-        const licensesRaw = btn.getAttribute('data-licenses');
-        if (isTrial) {
-          openCheckout({ trial: true });
-        } else if (billing === 'monthly') {
-          openCheckout({ billing_cycle: 'monthly', licenses: 1 });
-        } else if (billing === 'annual') {
-          openCheckout({ billing_cycle: 'annual', licenses: 1 });
-        } else if (billing === 'lifetime') {
-          openCheckout({ billing_cycle: 'lifetime', licenses: -1 });
-        } else {
-          openCheckout({ trial: true });
-        }
-      });
-    });
-
-    document.getElementById('hero-buy')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      openCheckout({ trial: true });
-    });
-    document.getElementById('nav-buy')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      openCheckout({ trial: true });
-    });
-
-    // ✨ FAQ interactive (fix + animation)
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach((item) => {
-      const questionDiv = item.querySelector('.faq-q');
-      const answerDiv = item.querySelector('.faq-a');
-      const toggleSpan = questionDiv.querySelector('span');
-      if (!answerDiv) return;
-      answerDiv.style.maxHeight = '0px';
-      answerDiv.classList.remove('show');
-      questionDiv.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = answerDiv.classList.contains('show');
-        // close all others first for clean UX (optional but nice)
-        faqItems.forEach(other => {
-          const otherAnswer = other.querySelector('.faq-a');
-          const otherSpan = other.querySelector('.faq-q span');
-          if (otherAnswer && other !== item) {
-            otherAnswer.classList.remove('show');
-            otherAnswer.style.maxHeight = '0px';
-            if (otherSpan) otherSpan.textContent = '+';
-          }
-        });
-        if (!isOpen) {
-          answerDiv.classList.add('show');
-          answerDiv.style.maxHeight = answerDiv.scrollHeight + 'px';
-          if (toggleSpan) toggleSpan.textContent = '−';
-        } else {
-          answerDiv.classList.remove('show');
-          answerDiv.style.maxHeight = '0px';
-          if (toggleSpan) toggleSpan.textContent = '+';
-        }
-      });
-    });
-  })();
-</script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>

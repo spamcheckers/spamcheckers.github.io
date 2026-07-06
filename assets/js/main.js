@@ -1,237 +1,168 @@
+/* Email Spam Shield — site v2 motion layer */
 (function () {
   'use strict';
+  var root = document.documentElement;
+  root.classList.add('js');
 
-  // ── Nav scroll ──────────────────────────────────────────────
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ── Scroll progress bar + sticky nav state ────────────────────────
+  var progress = document.getElementById('scrollProgress');
   var nav = document.getElementById('nav');
-  window.addEventListener('scroll', function () {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
-  }, { passive: true });
+  function onScroll() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
+    progress.style.width = (p * 100) + '%';
+    nav.classList.toggle('is-stuck', (window.scrollY || h.scrollTop) > 20);
+    parallax();
+  }
 
-  // ── Mobile menu ─────────────────────────────────────────────
-  var toggle = document.getElementById('navToggle');
-  if (toggle) {
-    toggle.addEventListener('click', function () {
-      var links = document.querySelector('.nav__links');
-      var open  = links.style.display === 'flex';
-      links.style.cssText = open ? '' : 'display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:rgba(5,13,26,0.97);padding:20px 24px;gap:20px;border-bottom:1px solid rgba(148,163,184,0.1)';
+  // ── Parallax (transform based on element center vs viewport) ───────
+  var pxEls = [].slice.call(document.querySelectorAll('[data-parallax]'));
+  function parallax() {
+    if (reduce) return;
+    var vh = window.innerHeight;
+    pxEls.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      var center = r.top + r.height / 2;
+      var off = (center - vh / 2) / vh;              // -1 .. 1
+      var k = parseFloat(el.getAttribute('data-parallax')) || 0;
+      el.style.transform = 'translate3d(0,' + (off * k * 120).toFixed(1) + 'px,0)';
     });
   }
 
-  // ── Typing demo animation ────────────────────────────────────
-  var scenarios = [
-    { text: 'john.smith@gmail.com',       verdict: 'allowed',  msg: '✓  Email looks good' },
-    { text: 'test@testing.com',           verdict: 'blocked',  msg: '✕  Obvious test/placeholder email' },
-    { text: 'user12345678@yahoo.com',     verdict: 'flagged',  msg: '⚠  Suspicious — excessive numbers' },
-    { text: 'noreply@mailinator.com',     verdict: 'blocked',  msg: '✕  Disposable domain blocked' },
-    { text: 'alice@ocuco.com',            verdict: 'allowed',  msg: '✓  Email looks good' },
-    { text: 'qwerty123@tempmail.com',     verdict: 'blocked',  msg: '✕  Keyboard walk + disposable domain' },
-  ];
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
 
-  var typingEl  = document.getElementById('demoTyping');
-  var verdictEl = document.getElementById('demoVerdict');
-  var cursorEl  = document.getElementById('demoCursor');
+  // ── Reveal on scroll ──────────────────────────────────────────────
+  var reveal = [].slice.call(document.querySelectorAll('.reveal'));
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          var d = parseInt(e.target.getAttribute('data-d') || '0', 10);
+          e.target.style.transitionDelay = (d * 90) + 'ms';
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+    reveal.forEach(function (el) { io.observe(el); });
+  } else {
+    reveal.forEach(function (el) { el.classList.add('is-in'); });
+  }
 
-  if (!typingEl) return;
-
-  var idx      = 0;
-  var charIdx  = 0;
-  var deleting = false;
-  var paused   = false;
-
-  function tick() {
-    var s = scenarios[idx];
-
-    if (paused) return;
-
-    if (!deleting && charIdx <= s.text.length) {
-      typingEl.textContent = s.text.slice(0, charIdx);
-      if (charIdx < s.text.length) {
-        charIdx++;
-        setTimeout(tick, 55 + Math.random() * 35);
-      } else {
-        // Finished typing — show verdict after short delay
-        paused = true;
-        setTimeout(function () {
-          showVerdict(s.verdict, s.msg);
-          setTimeout(function () {
-            paused   = false;
-            deleting = true;
-            setTimeout(tick, 60);
-          }, 2200);
-        }, 400);
-      }
-    } else if (deleting && charIdx >= 0) {
-      typingEl.textContent = s.text.slice(0, charIdx);
-      if (charIdx > 0) {
-        charIdx--;
-        setTimeout(tick, 28);
-      } else {
-        deleting = false;
-        clearVerdict();
-        idx = (idx + 1) % scenarios.length;
-        setTimeout(tick, 500);
-      }
+  // ── Count-up stats ────────────────────────────────────────────────
+  function fmt(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(n % 1e6 === 0 ? 0 : 1) + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
+    return String(n);
+  }
+  function countUp(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+    var suffix = el.getAttribute('data-suffix') || '';
+    if (reduce) { el.textContent = fmt(target) + suffix; return; }
+    var start = null, dur = 1400;
+    function tick(t) {
+      if (start === null) start = t;
+      var p = Math.min((t - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(target * eased)) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
     }
+    requestAnimationFrame(tick);
+  }
+  var counts = [].slice.call(document.querySelectorAll('[data-count]'));
+  if ('IntersectionObserver' in window) {
+    var cio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { countUp(e.target); cio.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    counts.forEach(function (el) { cio.observe(el); });
+  } else {
+    counts.forEach(countUp);
   }
 
-  function showVerdict(type, msg) {
-    verdictEl.textContent  = msg;
-    verdictEl.className    = 'demo-verdict demo-verdict--' + type;
+  // ── Engine scrollytelling ─────────────────────────────────────────
+  var steps = [].slice.call(document.querySelectorAll('.step'));
+  var layerEls = [].slice.call(document.querySelectorAll('.layers li'));
+  var scenes = [].slice.call(document.querySelectorAll('.scene'));
+  var sceneScore = document.getElementById('sceneScore');
+  function scoreColor(v) { return v >= 60 ? '#f43f5e' : v >= 30 ? '#f59e0b' : '#6366f1'; }
+  function setEngine(step) {
+    var score = parseInt(step.getAttribute('data-score'), 10) || 0;
+    var idx = parseInt(step.getAttribute('data-step'), 10) || 0;
+    if (sceneScore) { sceneScore.textContent = score; sceneScore.style.color = scoreColor(score); }
+    scenes.forEach(function (sc) { sc.classList.toggle('on', parseInt(sc.getAttribute('data-scene'), 10) === idx); });
+    steps.forEach(function (s) { s.classList.toggle('active', s === step); });
+    layerEls.forEach(function (l, i) { l.classList.toggle('on', i <= idx); });
   }
-  function clearVerdict() {
-    verdictEl.textContent = '';
-    verdictEl.className   = 'demo-verdict';
+  if (steps.length) {
+    if ('IntersectionObserver' in window) {
+      var sio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) setEngine(e.target); });
+      }, { threshold: 0.6, rootMargin: '-10% 0px -30% 0px' });
+      steps.forEach(function (s) { sio.observe(s); });
+    }
+    setEngine(steps[0]);
   }
 
-  setTimeout(tick, 800);
-
-  // ── Smooth scroll for anchor links ──────────────────────────
-  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      var target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  // ── Intersection observer — fade-in on scroll ────────────────
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity    = '1';
-        entry.target.style.transform  = 'translateY(0)';
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.feature-card, .layer-item, .integration-card, .pricing-card, .flow__step').forEach(function (el) {
-    el.style.opacity   = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity .5s ease, transform .5s ease';
-    observer.observe(el);
-  });
-
-  // ── Pricing Modal ────────────────────────────────────────────
-  var PLANS = {
-    starter: {
-      badge:    'Starter',
-      badgeCls: 'modal__badge--slate',
-      title:    '3 Site License',
-      subtitle: 'Perfect for individual developers & small projects',
-      currency: '$',
-      amount:   '99',
-      period:   '/ year',
-      url:      'https://checkout.freemius.com/plugin/32247/plan/52908/licenses/3/',
-      features: [
-        'Use on up to 3 WordPress sites',
-        'All 6 detection layers (Syntax, Disposable, MX, SMTP, Behavior, Reputation)',
-        'Real-time AJAX email validation',
-        'Honeypot + timing bot detection',
-        'All 7 form plugin integrations',
-        'Full submission logs & CSV export',
-        'Auto-updating disposable domain list',
-        'Hard-block rules engine',
-        'Email alerts on block events',
-        '1 year of updates & support',
-      ]
-    },
-    agency: {
-      badge:    'Most Popular',
-      badgeCls: 'modal__badge--indigo',
-      title:    '50 Site License',
-      subtitle: 'Built for agencies managing multiple client sites',
-      currency: '$',
-      amount:   '249',
-      period:   '/ year',
-      url:      'https://checkout.freemius.com/plugin/32247/plan/52909/licenses/50/',
-      features: [
-        'Use on up to 50 WordPress sites',
-        'All 6 detection layers (Syntax, Disposable, MX, SMTP, Behavior, Reputation)',
-        'Real-time AJAX email validation',
-        'Honeypot + timing bot detection',
-        'All 7 form plugin integrations',
-        'Full submission logs & CSV export',
-        'Auto-updating disposable domain list',
-        'Hard-block rules engine',
-        'Email alerts on block events',
-        'Priority support',
-        '1 year of updates & support',
-      ]
-    },
-    lifetime: {
-      badge:    'Best Value',
-      badgeCls: 'modal__badge--emerald',
-      title:    'Unlimited Lifetime License',
-      subtitle: 'Unlimited sites, one payment — forever',
-      currency: '$',
-      amount:   '499',
-      period:   'one-time',
-      url:      'https://checkout.freemius.com/plugin/32247/plan/52910/licenses/unlimited/',
-      features: [
-        'Use on unlimited WordPress sites',
-        'All 6 detection layers (Syntax, Disposable, MX, SMTP, Behavior, Reputation)',
-        'Real-time AJAX email validation',
-        'Honeypot + timing bot detection',
-        'All 7 form plugin integrations',
-        'Full submission logs & CSV export',
-        'Auto-updating disposable domain list',
-        'Hard-block rules engine',
-        'Email alerts on block events',
-        'Lifetime updates — pay once, own it forever',
-        'Priority support',
-      ]
+  // ── Freemius checkout ─────────────────────────────────────────────
+  // Fill these from your Freemius dashboard: Settings → Keys for the
+  // plugin ID + public key, and each plan's ID (Pricing → plan). Once set,
+  // clicking a plan opens the real Freemius checkout; until then a small
+  // info modal is shown.
+  // Real Freemius product (Email Spam Shield, plugin 32247). Each plan maps to
+  // its numeric Freemius plan ID; `url` is the hosted-checkout fallback used if
+  // the Freemius checkout script hasn't loaded.
+  var FREEMIUS = {
+    pluginId: '32247',
+    publicKey: 'pk_acbf9651f4555a9cd36a149d2a962',
+    plans: {
+      startup:  { planId: '52908', name: 'Startup',  price: '$49 / year',  sites: 'Up to 3 sites',  url: 'https://checkout.freemius.com/plugin/32247/plan/52908/' },
+      agency:   { planId: '52909', name: 'Agency',   price: '$99 / year',  sites: 'Up to 50 sites', url: 'https://checkout.freemius.com/plugin/32247/plan/52909/' },
+      lifetime: { planId: '52910', name: 'Lifetime', price: '$249 once',   sites: 'Unlimited sites', url: 'https://checkout.freemius.com/plugin/32247/plan/52910/' }
     }
   };
+  var fsReady = FREEMIUS.pluginId && FREEMIUS.publicKey && window.FS && FS.Checkout;
+  var fsHandler = fsReady ? new FS.Checkout({ plugin_id: FREEMIUS.pluginId, public_key: FREEMIUS.publicKey }) : null;
 
-  var overlay   = document.getElementById('pricingModal');
-  var modalBody = document.getElementById('modalBody');
-
-  function openModal(planKey) {
-    var p = PLANS[planKey];
-    if (!p || !overlay) return;
-
-    modalBody.innerHTML =
-      '<button class="modal__close" id="modalClose">&#x2715;</button>' +
-      '<span class="modal__badge ' + p.badgeCls + '">' + p.badge + '</span>' +
-      '<div class="modal__title">' + p.title + '</div>' +
-      '<div class="modal__subtitle">' + p.subtitle + '</div>' +
-      '<div class="modal__price-row">' +
-        '<span class="modal__currency">' + p.currency + '</span>' +
-        '<span class="modal__amount">' + p.amount + '</span>' +
-        '<span class="modal__period">' + p.period + '</span>' +
-      '</div>' +
-      '<ul class="modal__features">' +
-        p.features.map(function (f) { return '<li>' + f + '</li>'; }).join('') +
-      '</ul>' +
-      '<a href="' + p.url + '" target="_blank" rel="noopener" class="btn btn--primary btn--full" style="font-size:16px;padding:14px;justify-content:center;text-align:center" onclick="closeModal()">Complete Purchase →</a>' +
-      '<p class="modal__note">Secure checkout powered by <a href="https://freemius.com" target="_blank" rel="noopener">Freemius</a> · 30-day money-back guarantee</p>';
-
-    overlay.classList.add('open');
+  var buyModal = document.getElementById('buyModal');
+  var buyBody = document.getElementById('buyBody');
+  function closeBuy() { if (buyModal) { buyModal.classList.remove('is-open'); document.body.style.overflow = ''; } }
+  function openBuy(key) {
+    var p = FREEMIUS.plans[key];
+    if (!p) return;
+    if (fsHandler) {                                   // embedded Freemius checkout
+      fsHandler.open({ plan_id: p.planId, title: 'Email Spam Shield — ' + p.name, licenses: 1 });
+      return;
+    }
+    if (p.url) {                                       // hosted-checkout fallback
+      window.open(p.url, '_blank', 'noopener');
+      return;
+    }
+    if (!buyModal) return;                              // fallback info modal
+    buyBody.innerHTML =
+      '<h3>' + p.name + ' — ' + p.price + '</h3>' +
+      '<p>' + p.sites + '. Secure checkout via Freemius · 30-day money-back guarantee.</p>' +
+      '<p class="buy-modal__note">Add your Freemius <code>pluginId</code>, <code>publicKey</code> and plan IDs in <code>assets/js/main.js</code> to enable one-click checkout.</p>' +
+      '<button class="btn btn--primary btn--block" id="buyOk" type="button">Got it</button>';
+    buyModal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
-
-    document.getElementById('modalClose').addEventListener('click', closeModal);
+    var ok = document.getElementById('buyOk');
+    if (ok) ok.addEventListener('click', closeBuy);
   }
-
-  function closeModal() {
-    if (overlay) overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  if (overlay) {
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) closeModal();
-    });
-  }
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeModal();
+  [].slice.call(document.querySelectorAll('.js-buy')).forEach(function (b) {
+    b.addEventListener('click', function (e) { e.preventDefault(); openBuy(b.getAttribute('data-plan')); });
   });
+  if (buyModal) {
+    buyModal.addEventListener('click', function (e) { if (e.target === buyModal) closeBuy(); });
+    var bc = document.getElementById('buyClose');
+    if (bc) bc.addEventListener('click', closeBuy);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeBuy(); });
+  }
 
-  // Expose globally so onclick attributes work
-  window.openModal  = openModal;
-  window.closeModal = closeModal;
-
+  onScroll();
 })();

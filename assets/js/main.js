@@ -1,168 +1,139 @@
-/* Email Spam Shield — site v2 motion layer */
+/* Email Spam Shield — marketing site motion + interactions */
 (function () {
-  'use strict';
-  var root = document.documentElement;
-  root.classList.add('js');
+	'use strict';
 
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  document.getElementById('year').textContent = new Date().getFullYear();
+	// ── Footer year ──────────────────────────────────────────────
+	var yr = document.getElementById('yr');
+	if (yr) { yr.textContent = new Date().getFullYear(); }
 
-  // ── Scroll progress bar + sticky nav state ────────────────────────
-  var progress = document.getElementById('scrollProgress');
-  var nav = document.getElementById('nav');
-  function onScroll() {
-    var h = document.documentElement;
-    var max = h.scrollHeight - h.clientHeight;
-    var p = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
-    progress.style.width = (p * 100) + '%';
-    nav.classList.toggle('is-stuck', (window.scrollY || h.scrollTop) > 20);
-    parallax();
-  }
+	// ── Sticky nav state ─────────────────────────────────────────
+	var nav = document.getElementById('nav');
+	function onScroll() { if (nav) { nav.classList.toggle('is-stuck', window.scrollY > 8); } }
+	onScroll();
+	window.addEventListener('scroll', onScroll, { passive: true });
 
-  // ── Parallax (transform based on element center vs viewport) ───────
-  var pxEls = [].slice.call(document.querySelectorAll('[data-parallax]'));
-  function parallax() {
-    if (reduce) return;
-    var vh = window.innerHeight;
-    pxEls.forEach(function (el) {
-      var r = el.getBoundingClientRect();
-      var center = r.top + r.height / 2;
-      var off = (center - vh / 2) / vh;              // -1 .. 1
-      var k = parseFloat(el.getAttribute('data-parallax')) || 0;
-      el.style.transform = 'translate3d(0,' + (off * k * 120).toFixed(1) + 'px,0)';
-    });
-  }
+	// ── Mobile menu ──────────────────────────────────────────────
+	var burger = document.getElementById('burger');
+	if (burger && nav) {
+		burger.addEventListener('click', function () {
+			var open = nav.classList.toggle('is-open');
+			burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+		});
+		nav.querySelectorAll('.nav__links a, .nav__cta a').forEach(function (a) {
+			a.addEventListener('click', function () {
+				nav.classList.remove('is-open');
+				burger.setAttribute('aria-expanded', 'false');
+			});
+		});
+	}
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+	// ── Freemius checkout ────────────────────────────────────────
+	// Open the embedded Freemius Checkout modal for a plan; fall back to the
+	// hosted checkout URL (the button's href) if the SDK didn't load.
+	var FS_CFG = { plugin_id: '32247', public_key: 'pk_acbf9651f4555a9cd36a149d2a962' };
+	function openFreemius(planId) {
+		if (typeof FS === 'undefined' || !FS.Checkout) { return false; }
+		try {
+			var cfg = { plugin_id: FS_CFG.plugin_id, public_key: FS_CFG.public_key, plan_id: planId };
+			// Support both SDK shapes: FS.Checkout.configure(...) and new FS.Checkout(...).
+			var handler = (typeof FS.Checkout.configure === 'function')
+				? FS.Checkout.configure(cfg)
+				: new FS.Checkout(cfg);
+			handler.open({ licenses: 1 });
+			return true;
+		} catch (e) { return false; }
+	}
+	document.querySelectorAll('[data-fs-plan]').forEach(function (el) {
+		el.addEventListener('click', function (e) {
+			// If the embedded modal opens, cancel the hosted-page navigation.
+			if (openFreemius(el.getAttribute('data-fs-plan'))) { e.preventDefault(); }
+		});
+	});
 
-  // ── Reveal on scroll ──────────────────────────────────────────────
-  var reveal = [].slice.call(document.querySelectorAll('.reveal'));
-  if ('IntersectionObserver' in window && !reduce) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          var d = parseInt(e.target.getAttribute('data-d') || '0', 10);
-          e.target.style.transitionDelay = (d * 90) + 'ms';
-          e.target.classList.add('is-in');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
-    reveal.forEach(function (el) { io.observe(el); });
-  } else {
-    reveal.forEach(function (el) { el.classList.add('is-in'); });
-  }
+	// ── Count-up ─────────────────────────────────────────────────
+	function countUp(el) {
+		var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+		var suffix = el.getAttribute('data-suffix') || '';
+		if (reduce || target === 0) { el.textContent = target.toLocaleString() + suffix; return; }
+		var start = null, dur = 1400;
+		function step(ts) {
+			if (!start) { start = ts; }
+			var p = Math.min((ts - start) / dur, 1);
+			var eased = 1 - Math.pow(1 - p, 3);
+			el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+			if (p < 1) { requestAnimationFrame(step); }
+		}
+		requestAnimationFrame(step);
+	}
 
-  // ── Count-up stats ────────────────────────────────────────────────
-  function fmt(n) {
-    if (n >= 1e6) return (n / 1e6).toFixed(n % 1e6 === 0 ? 0 : 1) + 'M';
-    if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
-    return String(n);
-  }
-  function countUp(el) {
-    var target = parseInt(el.getAttribute('data-count'), 10) || 0;
-    var suffix = el.getAttribute('data-suffix') || '';
-    if (reduce) { el.textContent = fmt(target) + suffix; return; }
-    var start = null, dur = 1400;
-    function tick(t) {
-      if (start === null) start = t;
-      var p = Math.min((t - start) / dur, 1);
-      var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmt(Math.round(target * eased)) + suffix;
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-  var counts = [].slice.call(document.querySelectorAll('[data-count]'));
-  if ('IntersectionObserver' in window) {
-    var cio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { countUp(e.target); cio.unobserve(e.target); } });
-    }, { threshold: 0.5 });
-    counts.forEach(function (el) { cio.observe(el); });
-  } else {
-    counts.forEach(countUp);
-  }
+	// ── Engine score animation ───────────────────────────────────
+	function animateScore() {
+		var arc = document.getElementById('scoreArc');
+		var num = document.getElementById('scoreNum');
+		var verdict = document.getElementById('scoreVerdict');
+		var reasonsBox = document.getElementById('scoreReasons');
+		if (!arc || !num) { return; }
+		var score = 92;
+		var C = 327;
+		// colour by score
+		var col = score >= 60 ? '#ef4444' : (score >= 30 ? '#f59e0b' : '#10b981');
+		arc.style.stroke = col;
+		verdict.textContent = 'Blocked';
+		verdict.style.color = col;
+		var reasons = [
+			'Disposable / throwaway domain detected',
+			'IP listed on 2 abuse feeds',
+			'Content: link stuffing + spam keywords'
+		];
+		if (reasonsBox && !reasonsBox.childElementCount) {
+			reasons.forEach(function (r) { var s = document.createElement('span'); s.textContent = r; reasonsBox.appendChild(s); });
+		}
+		if (reduce) {
+			arc.style.strokeDashoffset = C * (1 - score / 100);
+			num.textContent = score;
+			if (reasonsBox) { reasonsBox.querySelectorAll('span').forEach(function (s) { s.classList.add('on'); }); }
+			return;
+		}
+		// ring + number
+		requestAnimationFrame(function () { arc.style.strokeDashoffset = C * (1 - score / 100); });
+		var start = null, dur = 1100;
+		function step(ts) {
+			if (!start) { start = ts; }
+			var p = Math.min((ts - start) / dur, 1);
+			num.textContent = Math.round(score * (1 - Math.pow(1 - p, 3)));
+			if (p < 1) { requestAnimationFrame(step); }
+		}
+		requestAnimationFrame(step);
+		// stagger reasons
+		if (reasonsBox) {
+			reasonsBox.querySelectorAll('span').forEach(function (s, i) {
+				setTimeout(function () { s.classList.add('on'); }, 500 + i * 220);
+			});
+		}
+	}
 
-  // ── Engine scrollytelling ─────────────────────────────────────────
-  var steps = [].slice.call(document.querySelectorAll('.step'));
-  var layerEls = [].slice.call(document.querySelectorAll('.layers li'));
-  var scenes = [].slice.call(document.querySelectorAll('.scene'));
-  var sceneScore = document.getElementById('sceneScore');
-  function scoreColor(v) { return v >= 60 ? '#f43f5e' : v >= 30 ? '#f59e0b' : '#6366f1'; }
-  function setEngine(step) {
-    var score = parseInt(step.getAttribute('data-score'), 10) || 0;
-    var idx = parseInt(step.getAttribute('data-step'), 10) || 0;
-    if (sceneScore) { sceneScore.textContent = score; sceneScore.style.color = scoreColor(score); }
-    scenes.forEach(function (sc) { sc.classList.toggle('on', parseInt(sc.getAttribute('data-scene'), 10) === idx); });
-    steps.forEach(function (s) { s.classList.toggle('active', s === step); });
-    layerEls.forEach(function (l, i) { l.classList.toggle('on', i <= idx); });
-  }
-  if (steps.length) {
-    if ('IntersectionObserver' in window) {
-      var sio = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) setEngine(e.target); });
-      }, { threshold: 0.6, rootMargin: '-10% 0px -30% 0px' });
-      steps.forEach(function (s) { sio.observe(s); });
-    }
-    setEngine(steps[0]);
-  }
+	// ── IntersectionObserver: reveal + trigger counters/score ────
+	if ('IntersectionObserver' in window) {
+		var io = new IntersectionObserver(function (entries) {
+			entries.forEach(function (e) {
+				if (!e.isIntersecting) { return; }
+				var el = e.target;
+				el.classList.add('is-in');
+				el.querySelectorAll && el.querySelectorAll('b[data-count]').forEach(countUp);
+				if (el.querySelector && el.querySelector('#scoreArc')) { animateScore(); }
+				io.unobserve(el);
+			});
+		}, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
 
-  // ── Freemius checkout ─────────────────────────────────────────────
-  // Fill these from your Freemius dashboard: Settings → Keys for the
-  // plugin ID + public key, and each plan's ID (Pricing → plan). Once set,
-  // clicking a plan opens the real Freemius checkout; until then a small
-  // info modal is shown.
-  // Real Freemius product (Email Spam Shield, plugin 32247). Each plan maps to
-  // its numeric Freemius plan ID; `url` is the hosted-checkout fallback used if
-  // the Freemius checkout script hasn't loaded.
-  var FREEMIUS = {
-    pluginId: '32247',
-    publicKey: 'pk_acbf9651f4555a9cd36a149d2a962',
-    plans: {
-      startup:  { planId: '52908', name: 'Startup',  price: '$49 / year',  sites: 'Up to 3 sites',  url: 'https://checkout.freemius.com/plugin/32247/plan/52908/' },
-      agency:   { planId: '52909', name: 'Agency',   price: '$99 / year',  sites: 'Up to 50 sites', url: 'https://checkout.freemius.com/plugin/32247/plan/52909/' },
-      lifetime: { planId: '52910', name: 'Lifetime', price: '$249 once',   sites: 'Unlimited sites', url: 'https://checkout.freemius.com/plugin/32247/plan/52910/' }
-    }
-  };
-  var fsReady = FREEMIUS.pluginId && FREEMIUS.publicKey && window.FS && FS.Checkout;
-  var fsHandler = fsReady ? new FS.Checkout({ plugin_id: FREEMIUS.pluginId, public_key: FREEMIUS.publicKey }) : null;
-
-  var buyModal = document.getElementById('buyModal');
-  var buyBody = document.getElementById('buyBody');
-  function closeBuy() { if (buyModal) { buyModal.classList.remove('is-open'); document.body.style.overflow = ''; } }
-  function openBuy(key) {
-    var p = FREEMIUS.plans[key];
-    if (!p) return;
-    if (fsHandler) {                                   // embedded Freemius checkout
-      fsHandler.open({ plan_id: p.planId, title: 'Email Spam Shield — ' + p.name, licenses: 1 });
-      return;
-    }
-    if (p.url) {                                       // hosted-checkout fallback
-      window.open(p.url, '_blank', 'noopener');
-      return;
-    }
-    if (!buyModal) return;                              // fallback info modal
-    buyBody.innerHTML =
-      '<h3>' + p.name + ' — ' + p.price + '</h3>' +
-      '<p>' + p.sites + '. Secure checkout via Freemius · 30-day money-back guarantee.</p>' +
-      '<p class="buy-modal__note">Add your Freemius <code>pluginId</code>, <code>publicKey</code> and plan IDs in <code>assets/js/main.js</code> to enable one-click checkout.</p>' +
-      '<button class="btn btn--primary btn--block" id="buyOk" type="button">Got it</button>';
-    buyModal.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-    var ok = document.getElementById('buyOk');
-    if (ok) ok.addEventListener('click', closeBuy);
-  }
-  [].slice.call(document.querySelectorAll('.js-buy')).forEach(function (b) {
-    b.addEventListener('click', function (e) { e.preventDefault(); openBuy(b.getAttribute('data-plan')); });
-  });
-  if (buyModal) {
-    buyModal.addEventListener('click', function (e) { if (e.target === buyModal) closeBuy(); });
-    var bc = document.getElementById('buyClose');
-    if (bc) bc.addEventListener('click', closeBuy);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeBuy(); });
-  }
-
-  onScroll();
+		document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+		// ensure the score panel animates even if it isn't a .reveal in view path
+		var sp = document.querySelector('.engine__panel');
+		if (sp) { io.observe(sp); }
+	} else {
+		document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
+		document.querySelectorAll('b[data-count]').forEach(countUp);
+		animateScore();
+	}
 })();

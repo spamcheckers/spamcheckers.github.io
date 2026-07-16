@@ -1,8 +1,8 @@
-# Email Spam Shield
+# Elastic Spam Shield
 
 > A self-contained, multi-layer anti-spam plugin for WordPress. It blocks contact-form, comment, and registration spam using a 7-layer detection engine — with zero cloud dependency, so no visitor data ever leaves the site owner's server.
 
-Email Spam Shield scores every form submission across seven independent layers before it reaches the inbox or database. All checks run locally on the WordPress server: there are no external accounts, API keys, or third-party calls, which keeps it GDPR-friendly and privacy-preserving.
+Elastic Spam Shield scores every form submission across seven independent layers before it reaches the inbox or database. All checks run locally on the WordPress server: there are no external accounts, API keys, or third-party calls, which keeps it GDPR-friendly and privacy-preserving.
 
 ## What it does
 

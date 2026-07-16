@@ -1,4 +1,4 @@
-# robots.txt — Email Spam Shield
+# robots.txt — Elastic Spam Shield
 # Search engines and AI crawlers are welcome. See /llms.txt for an AI-readable summary.
 
 User-agent: *

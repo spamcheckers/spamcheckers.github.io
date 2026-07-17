@@ -596,7 +596,6 @@ h4 {
     width: auto;
     object-fit: contain;
     opacity: .62;
-    filter: grayscale(1);
     transition: opacity .2s, filter .2s;
 }
 

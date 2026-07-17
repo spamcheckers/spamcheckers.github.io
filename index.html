@@ -69,6 +69,7 @@
                 <a href="#integrations">Integrations</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#faq">FAQ</a>
+                <a href="blog/index.html">Blog</a>
             </nav>
             <div class="nav__cta">
                 <a class="btn btn--ghost" href="https://wordpress.org/plugins/" target="_blank" rel="noopener">Get&nbsp;free</a>
@@ -148,10 +149,10 @@
         <!-- ══ Stats ═════════════════════════════════════════════════════════════ -->
         <section class="stats">
             <div class="wrap stats__grid">
-                <div class="stat reveal"><b data-count="12">0</b><span>detection layers</span></div>
-                <div class="stat reveal" data-d="1"><b data-count="100000" data-suffix="+">0</b><span>disposable domains</span></div>
-                <div class="stat reveal" data-d="2"><b data-count="0" data-text="0">0</b><span>bytes sent to the cloud</span></div>
-                <div class="stat reveal" data-d="3"><b data-count="11">0</b><span>form integrations</span></div>
+                <div class="stat reveal"><b data-count="7">0</b><span>detection layers</span></div>
+                <div class="stat reveal" data-d="1"><b data-count="148078" data-suffix="+">0</b><span>disposable domains</span></div>
+                <div class="stat reveal" data-d="2"><b data-count="0" data-text="0">GDPR</b><span>GDPR compliance</span></div>
+                <div class="stat reveal" data-d="3"><b>100+</b><span>form integrations</span></div>
             </div>
         </section>
 
@@ -166,21 +167,21 @@
                 <div class="engine__grid">
                     <ul class="layers reveal">
                         <li><span class="layers__ico">🔤</span>
-                            <div><b>Syntax &amp; patterns</b><small>Fake, gibberish &amp; typo domains</small></div><span class="layers__free">Free</span></li>
+                            <div><b>Syntax &amp; patterns</b><small>Rejects malformed addresses, gibberish local-parts and typo-squatted or look-alike domains before any network call runs.</small></div><span class="layers__free">Free</span></li>
                         <li><span class="layers__ico">📬</span>
-                            <div><b>Live SMTP + MX</b><small>Does the mailbox actually exist?</small></div><span class="layers__free">Free</span></li>
+                            <div><b>Live SMTP + MX</b><small>Verifies the domain's MX records, then asks the receiving mail server in real time whether the mailbox actually exists.</small></div><span class="layers__free">Free</span></li>
                         <li><span class="layers__ico">🗑️</span>
-                            <div><b>Disposable domains</b><small>100k+ throwaway providers</small></div><span class="layers__pro">Pro</span></li>
+                            <div><b>Disposable domains</b><small>Blocks 100,000+ throwaway and temporary-inbox providers, with the blocklist refreshed automatically.</small></div><span class="layers__pro">Pro</span></li>
                         <li><span class="layers__ico">🌐</span>
-                            <div><b>IP threat &amp; DNSBL</b><small>Aggregated abuse feeds</small></div><span class="layers__pro">Pro</span></li>
+                            <div><b>IP threat &amp; DNSBL</b><small>Matches the sender's IP against aggregated abuse feeds and DNS blocklists of known spam and botnet sources.</small></div><span class="layers__pro">Pro</span></li>
                         <li><span class="layers__ico">🕵️</span>
-                            <div><b>VPN / proxy / Tor</b><small>Anonymised traffic</small></div><span class="layers__pro">Pro</span></li>
+                            <div><b>VPN / proxy / Tor</b><small>Flags anonymised traffic from VPNs, open proxies, Tor exit nodes and datacenter hosting ranges.</small></div><span class="layers__pro">Pro</span></li>
                         <li><span class="layers__ico">📝</span>
-                            <div><b>Content analysis</b><small>Link spam, keywords, homoglyphs</small></div><span class="layers__pro">Pro</span></li>
+                            <div><b>Content analysis</b><small>Scans the submission for link stuffing, spam keywords and homoglyph or Unicode obfuscation tricks.</small></div><span class="layers__pro">Pro</span></li>
                         <li><span class="layers__ico">🤖</span>
-                            <div><b>Behaviour &amp; honeypot</b><small>Bots, timing, reputation</small></div><span class="layers__pro">Pro</span></li>
+                            <div><b>Behaviour &amp; honeypot</b><small>Catches bots with hidden honeypot fields, submission-timing checks and per-sender reputation history.</small></div><span class="layers__pro">Pro</span></li>
                         <li><span class="layers__ico">📏</span>
-                            <div><b>Custom rules</b><small>Your own if-this-then logic</small></div><span class="layers__pro">Pro</span></li>
+                            <div><b>Custom rules</b><small>Layer your own if-this-then-that logic on top to block, flag or allow by any field or signal.</small></div><span class="layers__pro">Pro</span></li>
                     </ul>
                     <div class="engine__panel reveal" data-d="1">
                         <div class="score glass">
@@ -272,20 +273,15 @@
                 </div>
                 <div class="geo__art reveal" data-d="1">
                     <div class="mapcard glass">
-                        <div class="mapcard__dots"><i></i><i></i><i></i></div>
-                        <svg class="worldmini" viewBox="0 0 200 100" aria-hidden="true">
-                    <defs><linearGradient id="og" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfdff"/><stop offset="1" stop-color="#eef3fb"/></linearGradient></defs>
-                    <rect width="200" height="100" rx="10" fill="url(#og)"/>
-                    <g fill="#e6e8ec">
-                        <ellipse cx="42" cy="46" rx="22" ry="16"/><ellipse cx="70" cy="70" rx="10" ry="14"/>
-                        <ellipse cx="104" cy="40" rx="16" ry="12"/><ellipse cx="112" cy="66" rx="12" ry="12"/>
-                        <ellipse cx="150" cy="44" rx="26" ry="15"/><ellipse cx="168" cy="74" rx="9" ry="7"/>
-                    </g>
-                    <ellipse cx="140" cy="50" rx="7" ry="6" fill="#174ea6"/>
-                    <ellipse cx="150" cy="44" rx="5" ry="4" fill="#4285f4"/>
-                    <ellipse cx="104" cy="40" rx="5" ry="4" fill="#8ab4f8"/>
-                </svg>
-                        <div class="mapcard__legend"><span>Fewer</span><i style="background:#c6dafc"></i><i style="background:#8ab4f8"></i><i style="background:#4285f4"></i><i style="background:#1967d2"></i><i style="background:#174ea6"></i><span>More</span></div>
+                        <div class="mapcard__head">
+                            <span class="mapcard__dots"><i></i><i></i><i></i></span>
+                            <span class="mapcard__title">Spam origins · last 30 days</span>
+                        </div>
+                        <div class="worldmap" id="spamMap">
+                            <img class="worldmap__img" src="assets/world.svg" width="1000" height="363" alt="World map showing where blocked spam originates" loading="lazy">
+                        </div>
+                        <ol class="maprank" id="spamRank" aria-label="Top spam origin countries"></ol>
+                        <div class="mapcard__legend"><span>Fewer</span><i style="background:#8ab4f8"></i><i style="background:#4285f4"></i><i style="background:#1967d2"></i><i style="background:#174ea6"></i><i style="background:#0f3d86"></i><span>More</span></div>
                     </div>
                 </div>
             </div>
@@ -437,12 +433,13 @@
             <nav>
                 <h4>Product</h4><a href="#features">Features</a><a href="#engine">Engine</a><a href="#pricing">Pricing</a></nav>
             <nav>
-                <h4>Resources</h4><a href="#faq">FAQ</a><a href="https://wordpress.org/plugins/" target="_blank" rel="noopener">WordPress.org</a><a href="https://spamcheckers.github.io" target="_blank" rel="noopener">Pro add-on</a></nav>
+                <h4>Resources</h4><a href="blog/index.html">Blog</a><a href="#faq">FAQ</a><a href="https://wordpress.org/plugins/" target="_blank" rel="noopener">WordPress.org</a><a href="https://spamcheckers.github.io" target="_blank" rel="noopener">Pro add-on</a></nav>
         </div>
         <div class="wrap foot__bar"><span>© <span id="yr"></span> Elastic Spam Shield</span><span>Built for WordPress · GPL-2.0</span></div>
     </footer>
 
     <script src="https://checkout.freemius.com/checkout.min.js"></script>
+    <script src="assets/js/geomap.js" defer></script>
     <script src="assets/js/main.js" defer></script>
 </body>
 

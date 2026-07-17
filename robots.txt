@@ -48,4 +48,4 @@ Allow: /
 User-agent: Meta-ExternalAgent
 Allow: /
 
-Sitemap: https://emailspamshield.com/sitemap.xml
+Sitemap: https://spamcheckers.github.io/sitemap.xml

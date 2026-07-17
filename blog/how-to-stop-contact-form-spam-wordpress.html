@@ -8,7 +8,7 @@
     <meta name="description" content="A practical, layered guide to eliminating WordPress contact form spam — honeypots, rate limiting, live email validation and invisible CAPTCHA — without adding friction for real visitors.">
     <meta name="keywords" content="stop contact form spam WordPress, contact form 7 spam, WPForms spam, honeypot, invisible CAPTCHA, form spam protection">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://emailspamshield.com/blog/how-to-stop-contact-form-spam-wordpress.html">
+    <link rel="canonical" href="https://spamcheckers.github.io/blog/how-to-stop-contact-form-spam-wordpress.html">
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
 
@@ -16,25 +16,33 @@
     <meta property="og:site_name" content="Elastic Spam Shield">
     <meta property="og:title" content="How to Stop Contact Form Spam in WordPress (2026 Guide)">
     <meta property="og:description" content="Seven layers that kill form spam without hurting real visitors.">
-    <meta property="og:url" content="https://emailspamshield.com/blog/how-to-stop-contact-form-spam-wordpress.html">
+    <meta property="og:url" content="https://spamcheckers.github.io/blog/how-to-stop-contact-form-spam-wordpress.html">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 
-    <script>document.documentElement.classList.remove('no-js');</script>
+    <script>
+        document.documentElement.classList.remove('no-js');
+    </script>
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": "How to Stop Contact Form Spam in WordPress (2026 Guide)",
-        "description": "A practical, layered guide to eliminating WordPress contact form spam without adding friction for real visitors.",
-        "datePublished": "2026-06-12",
-        "author": { "@type": "Organization", "name": "Elastic Spam Shield" },
-        "publisher": { "@type": "Organization", "name": "Elastic Spam Shield" },
-        "mainEntityOfPage": "https://emailspamshield.com/blog/how-to-stop-contact-form-spam-wordpress.html"
-    }
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "How to Stop Contact Form Spam in WordPress (2026 Guide)",
+            "description": "A practical, layered guide to eliminating WordPress contact form spam without adding friction for real visitors.",
+            "datePublished": "2026-06-12",
+            "author": {
+                "@type": "Organization",
+                "name": "Elastic Spam Shield"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Elastic Spam Shield"
+            },
+            "mainEntityOfPage": "https://spamcheckers.github.io/blog/how-to-stop-contact-form-spam-wordpress.html"
+        }
     </script>
 </head>
 
@@ -73,18 +81,23 @@
                 </header>
 
                 <div class="prose">
-                    <p>If you run any WordPress site with a contact form, you know the pattern: SEO pitches, crypto come-ons, gibberish messages and the occasional malicious payload. Most of it is automated — bots crawl the web, find form endpoints, and fire submissions in bulk. The good news is that automated spam is also the easiest to stop, because bots behave nothing like people.</p>
-                    <p>The wrong fix is to bolt a hard puzzle CAPTCHA onto every form and call it a day — that punishes real visitors and measurably lowers conversions. The right fix is a stack of lightweight, mostly invisible checks. Here are the seven layers we recommend, roughly in the order you should add them.</p>
+                    <p>If you run any WordPress site with a contact form, you know the pattern: SEO pitches, crypto come-ons, gibberish messages and the occasional malicious payload. Most of it is automated — bots crawl the web, find form endpoints, and
+                        fire submissions in bulk. The good news is that automated spam is also the easiest to stop, because bots behave nothing like people.</p>
+                    <p>The wrong fix is to bolt a hard puzzle CAPTCHA onto every form and call it a day — that punishes real visitors and measurably lowers conversions. The right fix is a stack of lightweight, mostly invisible checks. Here are the seven
+                        layers we recommend, roughly in the order you should add them.</p>
 
                     <h2>1. Add a honeypot field</h2>
-                    <p>A honeypot is a form field that's hidden from humans with CSS but visible to bots parsing the raw HTML. Real visitors never see it, so they leave it blank; naive bots fill in every field they find. If the honeypot has a value on submission, you can silently discard the message.</p>
+                    <p>A honeypot is a form field that's hidden from humans with CSS but visible to bots parsing the raw HTML. Real visitors never see it, so they leave it blank; naive bots fill in every field they find. If the honeypot has a value on submission,
+                        you can silently discard the message.</p>
                     <p>It's free, invisible, and stops a surprising share of low-effort bots. On its own it won't catch sophisticated attackers, but as the first layer it filters out the noise cheaply.</p>
 
                     <h2>2. Check submission timing</h2>
-                    <p>Humans take a few seconds to read and fill a form. Bots submit in milliseconds. By stamping the page render time and comparing it to the submission time, you can reject anything that arrives implausibly fast (say, under two seconds) — or that arrives suspiciously late from a page that's been sitting open for hours.</p>
+                    <p>Humans take a few seconds to read and fill a form. Bots submit in milliseconds. By stamping the page render time and comparing it to the submission time, you can reject anything that arrives implausibly fast (say, under two seconds)
+                        — or that arrives suspiciously late from a page that's been sitting open for hours.</p>
 
                     <h2>3. Rate-limit by IP</h2>
-                    <p>No legitimate visitor sends your contact form fifteen times a minute. Throttling submissions per IP address — with escalating temporary blocks for repeat offenders — shuts down flood attacks and brute-force scripts without affecting anyone acting in good faith.</p>
+                    <p>No legitimate visitor sends your contact form fifteen times a minute. Throttling submissions per IP address — with escalating temporary blocks for repeat offenders — shuts down flood attacks and brute-force scripts without affecting
+                        anyone acting in good faith.</p>
 
                     <div class="callout">
                         <span class="callout__ico">💡</span>
@@ -101,18 +114,22 @@
                     <p>Rejecting submissions from addresses that can't receive a reply eliminates a huge category of spam and, as a bonus, keeps your CRM clean. We cover the disposable side in depth in <a href="block-disposable-temporary-email-addresses.html">how to block disposable email addresses</a>.</p>
 
                     <h2>5. Screen the sender's IP reputation</h2>
-                    <p>Spam clusters around known-bad networks: compromised servers, abusive hosting ranges, and anonymising infrastructure. Cross-referencing the sender IP against aggregated abuse feeds and DNS blocklists lets you flag or block submissions from sources with a track record — before you ever read the message.</p>
+                    <p>Spam clusters around known-bad networks: compromised servers, abusive hosting ranges, and anonymising infrastructure. Cross-referencing the sender IP against aggregated abuse feeds and DNS blocklists lets you flag or block submissions
+                        from sources with a track record — before you ever read the message.</p>
 
                     <h2>6. Analyse the message content</h2>
-                    <p>When a submission clears every earlier check, the content itself is the last tell. Link stuffing, spam keywords, and homoglyph tricks (using look-alike Unicode characters to dodge filters) are strong signals. A content layer scores the message body and pushes borderline cases over the block threshold.</p>
+                    <p>When a submission clears every earlier check, the content itself is the last tell. Link stuffing, spam keywords, and homoglyph tricks (using look-alike Unicode characters to dodge filters) are strong signals. A content layer scores
+                        the message body and pushes borderline cases over the block threshold.</p>
 
                     <h2>7. Add invisible CAPTCHA — only if you still need it</h2>
-                    <p>Modern CAPTCHA like Cloudflare Turnstile or reCAPTCHA v3 runs in the background and scores visitors without asking them to click traffic lights. Reserve it as a backstop for the rare bot that survives everything else. Because the earlier layers have already removed most of the volume, you can set it to a strict threshold without worrying about false positives on real users.</p>
+                    <p>Modern CAPTCHA like Cloudflare Turnstile or reCAPTCHA v3 runs in the background and scores visitors without asking them to click traffic lights. Reserve it as a backstop for the rare bot that survives everything else. Because the earlier
+                        layers have already removed most of the volume, you can set it to a strict threshold without worrying about false positives on real users.</p>
 
                     <blockquote>The goal isn't one perfect filter — it's stacking cheap, independent checks so that anything getting through has to beat all of them at once.</blockquote>
 
                     <h2>Putting it together</h2>
-                    <p>You can assemble these layers by hand with several plugins and some custom code, or use a single engine that runs all of them and combines the signals into one score you control. That's exactly what <a href="../index.html#engine">Elastic Spam Shield's detection engine</a> does — honeypot, timing, rate limiting and live email validation are free, and the IP, disposable, content and behaviour layers come with Pro. It auto-detects Contact Form 7, WPForms and other popular form plugins, so there are no shortcodes or per-form setup.</p>
+                    <p>You can assemble these layers by hand with several plugins and some custom code, or use a single engine that runs all of them and combines the signals into one score you control. That's exactly what <a href="../index.html#engine">Elastic Spam Shield's detection engine</a>                        does — honeypot, timing, rate limiting and live email validation are free, and the IP, disposable, content and behaviour layers come with Pro. It auto-detects Contact Form 7, WPForms and other popular form plugins, so there are
+                        no shortcodes or per-form setup.</p>
                     <p>Whichever route you take, resist the urge to rely on a single silver bullet. Layered defence is what keeps your inbox clean and your real visitors happy.</p>
 
                     <div class="postcta">

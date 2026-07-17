@@ -8,7 +8,7 @@
     <meta name="description" content="A layered playbook for eliminating WordPress comment spam: native settings, moderation, honeypots, rate limiting, link analysis and IP reputation — without breaking real discussion.">
     <meta name="keywords" content="WordPress comment spam, stop blog comment spam, Akismet alternative, comment moderation, spam comments">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://emailspamshield.com/blog/wordpress-comment-spam-prevention-guide.html">
+    <link rel="canonical" href="https://spamcheckers.github.io/blog/wordpress-comment-spam-prevention-guide.html">
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
 
@@ -16,25 +16,33 @@
     <meta property="og:site_name" content="Elastic Spam Shield">
     <meta property="og:title" content="The Complete Guide to Stopping WordPress Comment Spam">
     <meta property="og:description" content="A layered playbook for keeping your comment section clean and human.">
-    <meta property="og:url" content="https://emailspamshield.com/blog/wordpress-comment-spam-prevention-guide.html">
+    <meta property="og:url" content="https://spamcheckers.github.io/blog/wordpress-comment-spam-prevention-guide.html">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 
-    <script>document.documentElement.classList.remove('no-js');</script>
+    <script>
+        document.documentElement.classList.remove('no-js');
+    </script>
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": "The Complete Guide to Stopping WordPress Comment Spam",
-        "description": "A layered playbook for eliminating WordPress comment spam without breaking real discussion.",
-        "datePublished": "2026-07-01",
-        "author": { "@type": "Organization", "name": "Elastic Spam Shield" },
-        "publisher": { "@type": "Organization", "name": "Elastic Spam Shield" },
-        "mainEntityOfPage": "https://emailspamshield.com/blog/wordpress-comment-spam-prevention-guide.html"
-    }
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "The Complete Guide to Stopping WordPress Comment Spam",
+            "description": "A layered playbook for eliminating WordPress comment spam without breaking real discussion.",
+            "datePublished": "2026-07-01",
+            "author": {
+                "@type": "Organization",
+                "name": "Elastic Spam Shield"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Elastic Spam Shield"
+            },
+            "mainEntityOfPage": "https://spamcheckers.github.io/blog/wordpress-comment-spam-prevention-guide.html"
+        }
     </script>
 </head>
 
@@ -73,7 +81,7 @@
                 </header>
 
                 <div class="prose">
-                    <p>Open comments are great for engagement and terrible for your sanity. Within days of enabling them, most WordPress sites start collecting link-stuffed nonsense, "great post, visit my site" filler, and SEO spam aimed at your <code>dofollow</code> links. Here's how to keep the conversation while cutting the junk to near zero.</p>
+                    <p>Open comments are great for engagement and terrible for your sanity. Within days of enabling them, most WordPress sites start collecting link-stuffed nonsense, "great post, visit my site" filler, and SEO spam aimed at your <code>dofollow</code>                        links. Here's how to keep the conversation while cutting the junk to near zero.</p>
 
                     <h2>Start with WordPress's built-in settings</h2>
                     <p>Before any plugin, tune what ships with core. Under <strong>Settings → Discussion</strong>:</p>
@@ -106,15 +114,18 @@
                     </ul>
 
                     <h2>Analyse the comment content</h2>
-                    <p>What survives every earlier layer gives itself away in the text: multiple outbound links, pharma and casino keywords, and homoglyph obfuscation designed to slip past word filters. A content-scoring layer weighs these signals and pushes borderline comments into moderation or the bin.</p>
+                    <p>What survives every earlier layer gives itself away in the text: multiple outbound links, pharma and casino keywords, and homoglyph obfuscation designed to slip past word filters. A content-scoring layer weighs these signals and pushes
+                        borderline comments into moderation or the bin.</p>
 
                     <blockquote>Any single filter can be beaten. Six cheap, independent filters stacked together almost never are — that's the whole game with comment spam.</blockquote>
 
                     <h2>Where Akismet fits</h2>
-                    <p>Akismet is a solid cloud filter and catches a lot, but it sends every comment (and commenter data) to a third-party service, which some sites can't do for privacy reasons — and it does little about bots that never reach the comment table. A self-contained, layered engine keeps the data on your own server and stops abuse earlier in the request.</p>
+                    <p>Akismet is a solid cloud filter and catches a lot, but it sends every comment (and commenter data) to a third-party service, which some sites can't do for privacy reasons — and it does little about bots that never reach the comment
+                        table. A self-contained, layered engine keeps the data on your own server and stops abuse earlier in the request.</p>
 
                     <h2>A self-hosted, layered approach</h2>
-                    <p><a href="../index.html#engine">Elastic Spam Shield</a> protects WordPress comments out of the box: honeypot, timing and rate limiting are free, and IP reputation, disposable detection and content analysis come with Pro. Everything runs on your server — nothing about your commenters is sent to the cloud — and you keep full control over thresholds, allowlists and whether borderline comments are blocked or just flagged.</p>
+                    <p><a href="../index.html#engine">Elastic Spam Shield</a> protects WordPress comments out of the box: honeypot, timing and rate limiting are free, and IP reputation, disposable detection and content analysis come with Pro. Everything
+                        runs on your server — nothing about your commenters is sent to the cloud — and you keep full control over thresholds, allowlists and whether borderline comments are blocked or just flagged.</p>
 
                     <div class="postcta">
                         <h3>Reclaim your comment section</h3>

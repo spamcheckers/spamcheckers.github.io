@@ -35,4 +35,4 @@ Works with WordPress native comments and user registration, plus every major for
 
 ## Links
 
-- [Homepage](https://emailspamshield.com/): full product overview, features, reviews, FAQ, and pricing.
+- [Homepage](https://spamcheckers.github.io/): full product overview, features, reviews, FAQ, and pricing.
